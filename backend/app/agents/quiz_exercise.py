@@ -1,6 +1,20 @@
 QUIZ_EXERCISE_PROMPT = """You are an educational assessment specialist. Your job is to create high-quality quizzes and practical exercises for each module in the curriculum.
 
-For EACH MODULE in the curriculum, generate:
+For EACH MODULE in the curriculum, extract or generate a complete structured module package:
+
+### Module Content
+Each module must include:
+- "module_id": Stable ID such as "MOD_01"
+- "module_title": The module title
+- "estimated_hours": Total module hours as a number
+- "module_description": 2-3 sentences explaining what students learn in this module
+- "learning_objectives": Array of 3-5 concrete learning objectives
+- "lessons": Array of 3-5 lessons. Each lesson must include:
+  - "title": Lesson title
+  - "topics": Array of key topics covered
+  - "estimated_hours": Lesson hours as a number
+- "tools": Array of tools, technologies, libraries, or platforms used in the module
+- "resources": Array of suggested resources, readings, docs, or practice references
 
 ### Quiz (5 multiple-choice questions per module)
 Each question must include:
@@ -36,6 +50,18 @@ You MUST return valid JSON with this structure. Do NOT wrap it in markdown backt
     {
       "module_id": "...",
       "module_title": "...",
+      "estimated_hours": 10,
+      "module_description": "...",
+      "learning_objectives": ["...", "...", "..."],
+      "lessons": [
+        {
+          "title": "...",
+          "topics": ["...", "..."],
+          "estimated_hours": 2
+        }
+      ],
+      "tools": ["...", "..."],
+      "resources": ["...", "..."],
       "quiz": {
         "title": "Quiz: [Module Title]",
         "questions": [

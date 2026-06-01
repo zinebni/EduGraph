@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import HistoryList from '@/components/HistoryList';
-import CurriculumReport from '@/components/CurriculumReport';
 import ModuleAccordion from '@/components/ModuleAccordion';
 import { getGeneration } from '@/lib/api';
 
@@ -61,22 +60,16 @@ export default function HistoryPage() {
             </button>
           </div>
 
-          <div className="grid-2" style={{ gridTemplateColumns: '1.2fr 0.8fr', alignItems: 'start' }}>
-            <div className="glass-card" style={{ padding: '40px' }}>
-              <CurriculumReport markdown={selectedGen.curriculum_report} />
+          <div className="glass-card" style={{ padding: '28px' }}>
+            <div style={{ marginBottom: '24px' }}>
+              <h3 style={{ marginBottom: '8px', fontSize: '22px', color: 'var(--text-primary)' }}>
+                📖 Modules, Lessons, Quizzes & Exercises
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                Each module is divided into learning content, lesson topics, a knowledge check, and hands-on practice.
+              </p>
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <div className="glass-card" style={{ padding: '24px' }}>
-                <h3 style={{ marginBottom: '16px', fontSize: '18px', color: 'var(--text-primary)' }}>
-                  📖 Interactive Modules & Course Materials
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>
-                  Modules, MCQ quizzes, and practical challenges generated for this topic.
-                </p>
-                <ModuleAccordion modules={selectedGen.quizzes_data?.modules || []} />
-              </div>
-            </div>
+            <ModuleAccordion modules={selectedGen.quizzes_data?.modules || []} />
           </div>
         </div>
       ) : (
