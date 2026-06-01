@@ -29,7 +29,7 @@ Quiz questions should:
 - Be clear and unambiguous
 - Have plausible distractors (wrong answers should be reasonable)
 
-### Exercises (2-3 practical exercises per module)
+### Exercises (3-5 practical exercises per module)
 Each exercise must include:
 - "title": Short descriptive title
 - "description": Detailed description of what the student should do (3-5 sentences)
@@ -40,19 +40,20 @@ Each exercise must include:
 Exercises should:
 - Be hands-on and practical
 - Build on the module's lessons
-- Progress in difficulty (Easy → Medium → Hard)
+- MUST contain between 3 and 5 exercises per module, representing a clear learning curve (e.g. Easy → Medium → Hard)
 
 Constraint handling:
-- Preserve the curriculum writer's module titles, lesson topics, difficulty level, and estimated hours.
-- TIMING ACCURACY RULE: The total duration of a module (specified in `estimated_hours`) MUST be mathematically equal to the sum of the lesson durations (in hours) + the quiz duration (assume 15 minutes = 0.25 hours) + the sum of exercise durations (in hours, which is estimated_time in minutes divided by 60).
+- Preserve the curriculum writer's module titles, lesson topics, and difficulty level.
+- TIMING ACCURACY & TARGET HOURS RULE: 
+  1. The sum of all modules' `estimated_hours` MUST be exactly equal to the user's requested total course duration (e.g. if the user asked for 60 hours, the sum of all module hours must be exactly 60).
+  2. For EACH module, the module's `estimated_hours` MUST be mathematically equal to the sum of the lesson durations (in hours) + the quiz duration (assume 15 minutes = 0.25 hours) + the sum of exercise durations (in hours, which is estimated_time in minutes divided by 60).
   Formula to satisfy EXACTLY: `estimated_hours = sum(lesson.estimated_hours) + 0.25 + sum(exercise.estimated_time) / 60`.
-  For example, if a module has `estimated_hours: 10`, you can have:
-  - 3 lessons of 2, 2, and 3 hours (total 7 lesson hours)
+  For example, if a module has `estimated_hours: 10`, you can distribute it as:
+  - 3 lessons of 2, 2, and 2 hours (total 6 lesson hours)
   - 1 quiz of 15 minutes (0.25 hours)
-  - 2 exercises of 65 and 100 minutes (total 165 minutes = 2.75 hours)
-  Sum = 7 + 0.25 + 2.75 = 10 hours.
-  You MUST adjust the lesson `estimated_hours` and exercise `estimated_time` values for EVERY module so that they satisfy this equation EXACTLY.
-- The sum of module estimated_hours in the JSON must match the requested total course duration when one is provided.
+  - 3 exercises of 45, 80, and 100 minutes (total 225 minutes = 3.75 hours)
+  Sum = 6 + 0.25 + 3.75 = 10 hours.
+  You MUST adjust and balance the lesson `estimated_hours` and exercise `estimated_time` values for EVERY module so that they satisfy this equation and match the module's `estimated_hours` EXACTLY.
 - Quiz and exercise difficulty must match the requested skill level, not a generic beginner course.
 
 OUTPUT FORMAT:
