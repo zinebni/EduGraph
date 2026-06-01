@@ -5,5 +5,5 @@ def create_tavily_tool(api_key: str) -> TavilySearch:
     return TavilySearch(
         max_results=5,
         topic="general",
-        api_key=api_key,
+        tavily_api_key=api_key,
     )

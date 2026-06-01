@@ -59,7 +59,7 @@ export default function SettingsForm() {
       }
       if (tavilyKey.trim()) {
         setTavilyKeySet(true);
-        setTavily('');
+        setTavilyKey('');
       }
     } catch (err) {
       showFeedback('error', 'Error occurred while saving: ' + err.message);
