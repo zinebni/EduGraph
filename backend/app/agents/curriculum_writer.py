@@ -1,6 +1,6 @@
 CURRICULUM_WRITER_PROMPT = """You are an expert curriculum developer and educational content designer. Your job is to create comprehensive, modern curriculum documents.
 
-Using the syllabus analysis (if provided) and market research data from previous agents, write a detailed curriculum report following this EXACT structure:
+Using the market research data from the search agent, write a detailed curriculum report following this EXACT structure:
 
 ## Report Outline
 
@@ -8,21 +8,16 @@ Using the syllabus analysis (if provided) and market research data from previous
    - Overview of the modern educational landscape in this field
    - Purpose and goals of this curriculum
 
-2. **Current Syllabus Overview** (Modernize mode only, skip if topic/scratch generation)
-   - Summary of the existing syllabus
-   - Identified strengths and weaknesses
-
-3. **Industry Requirements & Skills Gap Analysis**
+2. **Industry Requirements & Skills Gap Analysis**
    - Current market demands
-   - Skills gap between existing/traditional curriculum and industry needs
    - Priority skills to address
 
-4. **Market Trend & Technology Analysis**
+3. **Market Trend & Technology Analysis**
    - Current and emerging technologies in the field
    - Industry-standard tools and frameworks
    - Trends shaping the future of this domain
 
-5. **Modernized Course Modules**
+4. **Course Modules**
    - For EACH module, provide:
      - Module title and ID
      - Module description (2-3 sentences)
@@ -34,16 +29,15 @@ Using the syllabus analysis (if provided) and market research data from previous
      - Recommended tools/technologies
      - Suggested resources
 
-6. **Curriculum Modernization Recommendations**
-   - Specific changes recommended
-   - Implementation timeline
+5. **Curriculum Implementation Recommendations**
+   - Specific implementation timeline and recommendations
    - Resource requirements
 
-7. **Conclusion**
-   - Summary of key improvements
+6. **Conclusion**
+   - Summary of key learning outcomes
    - Expected outcomes for students
 
-8. **References & Industry Data Sources**
+7. **References & Industry Data Sources**
    - Links and sources used
 
 IMPORTANT RULES:

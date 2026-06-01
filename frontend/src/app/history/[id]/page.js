@@ -97,8 +97,8 @@ export default function GenerationDetailPage() {
       <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
         <div className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 32px', gap: '20px' }}>
           <div>
-            <span className={`badge ${generation.mode === 'modernize' ? 'badge-modernize' : 'badge-generate'}`} style={{ marginBottom: '8px' }}>
-              {generation.mode === 'modernize' ? 'Modernize Mode' : 'Generate Mode'}
+            <span className="badge badge-generate" style={{ marginBottom: '8px' }}>
+              Generate Mode
             </span>
             <h2 style={{ fontSize: '24px', fontWeight: '700' }}>{generation.title}</h2>
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>

@@ -96,8 +96,3 @@ export async function healthCheck() {
   return res.json();
 }
 
-export async function loadSampleSyllabus() {
-  const res = await fetch(`${API_URL}/api/sample-syllabus`);
-  if (!res.ok) throw new Error('Failed to load sample syllabus JSON');
-  return res.json();
-}

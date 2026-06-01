@@ -1,14 +1,7 @@
 'use client';
 
 export default function AgentProgress({ mode, activeAgent, completedAgents }) {
-  const allSteps = [
-    {
-      id: 'syllabus_reader_agent',
-      name: 'Syllabus Reader Agent',
-      desc: 'Parses existing JSON syllabus structures and identifies outdated items.',
-      emoji: '📄',
-      hideInMode: 'generate'
-    },
+  const steps = [
     {
       id: 'search_agent',
       name: 'Trend Analyst Search Agent',
@@ -28,9 +21,6 @@ export default function AgentProgress({ mode, activeAgent, completedAgents }) {
       emoji: '📝'
     }
   ];
-
-  // Filter steps based on current mode
-  const steps = allSteps.filter(step => !step.hideInMode || step.hideInMode !== mode);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

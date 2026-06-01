@@ -86,7 +86,7 @@ export default function ModuleAccordion({ modules }) {
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                <span className="badge badge-modernize" style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
+                <span className="badge" style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
                   {mod.module_id || `MOD_${String(index + 1).padStart(2, '0')}`}
                 </span>
                 <span style={{ fontWeight: '600', color: 'var(--text-primary)', fontSize: '15px' }}>
@@ -150,7 +150,7 @@ export default function ModuleAccordion({ modules }) {
                         <div
                           key={lessonIndex}
                           style={{
-                            background: 'rgba(255, 255, 255, 0.02)',
+                            background: '#f8fafc',
                             border: '1px solid var(--border-glass)',
                             borderRadius: 'var(--radius-sm)',
                             padding: '14px'

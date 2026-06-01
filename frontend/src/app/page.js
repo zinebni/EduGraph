@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import SyllabusUploader from '@/components/SyllabusUploader';
 import AgentProgress from '@/components/AgentProgress';
 import ModuleAccordion from '@/components/ModuleAccordion';
 import { connectAndGenerate } from '@/lib/api';
@@ -15,6 +14,14 @@ export default function GeneratePage() {
   const [agentResults, setAgentResults] = useState({});
   const [finalResult, setFinalResult] = useState(null);
   const [generationId, setGenerationId] = useState(null);
+  
+  // Topic generation form state
+  const [topic, setTopic] = useState('');
+  const [audience, setAudience] = useState('');
+  const [level, setLevel] = useState('Beginner');
+  const [hours, setHours] = useState('40');
+  const [query, setQuery] = useState('');
+
   const wsRef = useRef(null);
   const completedRef = useRef(new Set());
 
@@ -28,6 +35,17 @@ export default function GeneratePage() {
       reportRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [status]);
+
+  // Listen to the custom reset event from Header logo click
+  useEffect(() => {
+    const handleResetEvent = () => {
+      handleReset();
+    };
+    window.addEventListener('reset-curriculum-form', handleResetEvent);
+    return () => {
+      window.removeEventListener('reset-curriculum-form', handleResetEvent);
+    };
+  }, []);
 
   const handleStartGeneration = (requestData) => {
     setStatus('processing');
@@ -76,6 +94,11 @@ export default function GeneratePage() {
     setAgentResults({});
     setFinalResult(null);
     setGenerationId(null);
+    setTopic('');
+    setAudience('');
+    setLevel('Beginner');
+    setHours('40');
+    setQuery('');
     completedRef.current = new Set();
     if (wsRef.current) {
       wsRef.current.close();
@@ -86,16 +109,109 @@ export default function GeneratePage() {
   return (
     <div className="container animate-slide-up">
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '42px', fontWeight: '800', marginBottom: '12px' }} className="gradient-text">
+        <h1 style={{ fontSize: '40px', fontWeight: '800', marginBottom: '12px', letterSpacing: '-0.03em' }} className="gradient-text">
           Generate Future-Proof Curricula
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '18px', maxWidth: '600px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '17px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
           Harness the power of a collaborative team of AI agents that research, design, structure, and build comprehensive educational plans.
         </p>
       </div>
 
       {status === 'idle' && (
-        <SyllabusUploader onSubmit={handleStartGeneration} />
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleStartGeneration({
+              mode: 'generate',
+              topic,
+              target_audience: audience,
+              level,
+              total_hours: parseInt(hours) || 40,
+              query
+            });
+          }}
+          className="glass-card animate-fade-in" 
+          style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px' }}
+        >
+          <div style={{ borderBottom: '1px solid var(--border-glass)', paddingBottom: '16px', marginBottom: '8px', textAlign: 'center' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)' }}>
+              ✨ Configure Your Curriculum
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '4px' }}>
+              Provide the topic and parameters for the AI agents to research and design.
+            </p>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Course Topic <span style={{ color: 'var(--accent-error)' }}>*</span></label>
+            <input 
+              type="text" 
+              className="form-input" 
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="e.g. Modern Web Development with React and Next.js, Quantum Computing"
+              required 
+            />
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Target Audience</label>
+            <input 
+              type="text" 
+              className="form-input" 
+              value={audience}
+              onChange={(e) => setAudience(e.target.value)}
+              placeholder="e.g. Computer Science Students, Career Changers"
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Skill Level</label>
+              <select 
+                className="form-select" 
+                value={level}
+                onChange={(e) => setLevel(e.target.value)}
+              >
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Expert">Expert</option>
+              </select>
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Total Duration (Hours)</label>
+              <input 
+                type="number" 
+                className="form-input" 
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                placeholder="40"
+                min="1"
+                max="200"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Special Focus & Additional Instructions (Optional)</label>
+            <textarea 
+              className="form-textarea" 
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="e.g. Emphasize TypeScript, include a hands-on project with Prisma, structure modules sequentially..."
+              rows={4}
+            />
+          </div>
+
+          <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+            <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '14px 20px' }}>
+              ✨ Generate Curriculum
+            </button>
+          </div>
+        </form>
       )}
 
       {status === 'processing' && (
@@ -131,8 +247,8 @@ export default function GeneratePage() {
         <div ref={reportRef} className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
           <div className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 32px' }}>
             <div>
-              <span className={`badge ${generationMode === 'modernize' ? 'badge-modernize' : 'badge-generate'}`} style={{ marginBottom: '8px' }}>
-                {generationMode === 'modernize' ? 'Modernize Mode' : 'Generate Mode'}
+              <span className="badge badge-generate" style={{ marginBottom: '8px' }}>
+                Generate Mode
               </span>
               <h2 style={{ fontSize: '24px', fontWeight: '700' }}>Curriculum Generated Successfully!</h2>
             </div>
@@ -140,8 +256,6 @@ export default function GeneratePage() {
               Create Another
             </button>
           </div>
-
-
 
           <div className="glass-card" style={{ padding: '28px' }}>
             <div style={{ marginBottom: '24px' }}>

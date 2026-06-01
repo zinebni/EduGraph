@@ -24,7 +24,6 @@ class Generation(Base):
     curriculum_report = Column(Text, nullable=True)
     quizzes_data = Column(Text, nullable=True)
     search_results = Column(Text, nullable=True)
-    syllabus_summary = Column(Text, nullable=True)
     status = Column(String(20), default="processing")
     error_message = Column(Text, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

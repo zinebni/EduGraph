@@ -142,29 +142,20 @@ async def generate_curriculum(websocket: WebSocket):
 
         gen_id = str(uuid.uuid4())
 
-        if mode == "modernize":
-            syllabus_data = input_params.get("syllabus", {})
-            title = f"Modernized: {syllabus_data.get('program_name', 'Untitled')}"
-            user_query = input_params.get("query", "")
-            level = input_params.get("level", "Intermediate")
-            hours = input_params.get("total_hours") or syllabus_data.get("total_hours") or 60
-            input_data = json.dumps({"syllabus": syllabus_data, "query": user_query})
-            prompt_content = f"Modernize this syllabus:\n{json.dumps(syllabus_data, indent=2)}\n\nAdditional instructions: {user_query}"
-        else:
-            topic = input_params.get("topic", "Untitled")
-            title = f"Generated: {topic}"
-            target_audience = input_params.get("target_audience", "")
-            level = input_params.get("level", "Beginner")
-            hours = input_params.get("total_hours", 60)
-            user_query = input_params.get("query", "")
-            input_data = json.dumps({
-                "topic": topic,
-                "target_audience": target_audience,
-                "level": level,
-                "total_hours": hours,
-                "query": user_query
-            })
-            prompt_content = f"""Generate a new curriculum from scratch.
+        topic = input_params.get("topic", "Untitled")
+        title = f"Generated: {topic}"
+        target_audience = input_params.get("target_audience", "")
+        level = input_params.get("level", "Beginner")
+        hours = input_params.get("total_hours", 60)
+        user_query = input_params.get("query", "")
+        input_data = json.dumps({
+            "topic": topic,
+            "target_audience": target_audience,
+            "level": level,
+            "total_hours": hours,
+            "query": user_query
+        })
+        prompt_content = f"""Generate a new curriculum from scratch.
 
 Hard constraints:
 - Topic: {topic}
@@ -185,7 +176,7 @@ Workflow requirements:
             generation = Generation(
                 id=gen_id,
                 title=title,
-                mode=mode,
+                mode="generate",
                 input_data=input_data,
                 status="processing"
             )
@@ -195,7 +186,6 @@ Workflow requirements:
         graph = build_graph(google_key, tavily_key, model_name)
         inputs = {"messages": [("user", prompt_content)]}
 
-        syllabus_summary = ""
         search_results = ""
         curriculum_report = ""
         quizzes_data = ""
@@ -272,16 +262,7 @@ Workflow requirements:
                     if source_agent in sent_results:
                         continue
 
-                    if source_agent == "syllabus_reader_agent":
-                        if len(content) > len(syllabus_summary):
-                            syllabus_summary = content
-                            sent_results.add(source_agent)
-                            await websocket.send_json({
-                                "type": "agent_result",
-                                "agent": source_agent,
-                                "data": syllabus_summary
-                            })
-                    elif source_agent == "search_agent":
+                    if source_agent == "search_agent":
                         if len(content) > len(search_results):
                             search_results = content
                             sent_results.add(source_agent)
@@ -322,8 +303,6 @@ Workflow requirements:
                     result = await db.execute(select(Generation).where(Generation.id == gen_id))
                     gen_record = result.scalar_one_or_none()
                     if gen_record:
-                        if syllabus_summary:
-                            gen_record.syllabus_summary = syllabus_summary
                         if search_results:
                             gen_record.search_results = search_results
                         if curriculum_report:
@@ -339,10 +318,7 @@ Workflow requirements:
 
             sender = agent_name or getattr(msg, "name", "") or ""
 
-            if "syllabus_reader" in sender:
-                if len(content) > len(syllabus_summary) and "Successfully transferred" not in content:
-                    syllabus_summary = content
-            elif "search_agent" in sender:
+            if "search_agent" in sender:
                 if len(content) > len(search_results) and "Successfully transferred" not in content:
                     search_results = content
             elif "curriculum_writer" in sender:
@@ -364,10 +340,6 @@ Workflow requirements:
                     if len(content) > len(curriculum_report) and len(content) > 300:
                         curriculum_report = content
 
-                elif "program:" in content_lower and "institution:" in content_lower:
-                    if len(content) > len(syllabus_summary) and len(content) < 5000:
-                        syllabus_summary = content
-
                 elif ("search results" in content_lower or "tavily" in content_lower or "market research" in content_lower or "skills gap" in content_lower) and len(content) > 100:
                     if len(content) > len(search_results) and len(content) < 15000:
                         search_results = content
@@ -387,15 +359,13 @@ Workflow requirements:
         final_payload = {
             "curriculum_report": curriculum_report,
             "quizzes_data": final_quizzes,
-            "search_results": search_results,
-            "syllabus_summary": syllabus_summary
+            "search_results": search_results
         }
 
         async with async_session() as db:
             result = await db.execute(select(Generation).where(Generation.id == gen_id))
             gen_record = result.scalar_one_or_none()
             if gen_record:
-                gen_record.syllabus_summary = syllabus_summary
                 gen_record.search_results = search_results
                 gen_record.curriculum_report = curriculum_report
                 gen_record.quizzes_data = quizzes_data

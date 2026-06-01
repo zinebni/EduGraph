@@ -4,7 +4,7 @@ import SetupGuard from '@/components/SetupGuard';
 
 export const metadata = {
   title: 'EduGraph — Multi-Agent AI Curriculum & Course Generator',
-  description: 'Design comprehensive, modern curricula from scratch or modernize existing courses in real-time using LangGraph multi-agent orchestration.',
+  description: 'Design comprehensive, modern curricula in real-time using LangGraph multi-agent orchestration.',
 };
 
 export default function RootLayout({ children }) {

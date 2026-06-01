@@ -2,9 +2,8 @@
 
 EduGraph is a state-of-the-art, production-ready educational content design platform. It leverages a team of cooperative, specialized AI agents orchestrated via **LangGraph** to research, structure, write, and enrich course curricula in real time. 
 
-The system operates in two core workflows:
-*   **Modernize Mode**: Upload any traditional or outdated syllabus in JSON. The agent team analyzes the content, researches modern industry standards via Tavily Search, and completely rewrites it with modern stacks, quizzes, and projects.
-*   **Generate Mode**: Supply a new topic (e.g. "Generative AI", "Quantum Computing Foundations") along with target duration and audience parameters. The agents perform web research and build a rich curriculum from scratch.
+The system operates in a single, comprehensive generation pipeline:
+*   **Generate Mode**: Supply a new topic (e.g. "Generative AI", "Quantum Computing Foundations") along with target duration and audience parameters. The specialized agent team performs web research via Tavily Search, designs modular outlines, drafts comprehensive lesson materials, and generates interactive MCQ quizzes and hands-on coding challenges from scratch.
 
 ---
 
@@ -12,19 +11,17 @@ The system operates in two core workflows:
 
 ```mermaid
 graph TD
-    U["👤 User"] -->|"Upload JSON or enter topic"| FE["Next.js Frontend :3000"]
+    U["👤 User"] -->|"Enter topic & constraints"| FE["Next.js Frontend :3000"]
     FE -->|"WebSocket /ws/generate"| BE["FastAPI Backend :8000"]
     FE -->|"REST /api/settings"| BE
     FE -->|"REST /api/history"| BE
     BE --> DB["🗄️ SQLite Database"]
     BE --> SUP["🧠 team_supervisor"]
     
-    SUP -->|"Read syllabus<br/>(Modernize mode only)"| SR["📄 syllabus_reader_agent"]
     SUP -->|"Search trends & content"| SA["🔍 search_agent"]
     SUP -->|"Write curriculum"| CW["✍️ curriculum_writer_agent"]
     SUP -->|"Generate quizzes & exercises"| QE["📝 quiz_exercise_agent"]
     
-    SR -->|"Parsed syllabus data"| SUP
     SA -->|"Market insights"| SUP
     CW -->|"Curriculum report"| SUP
     QE -->|"MCQ quizzes + exercises"| SUP
@@ -44,30 +41,24 @@ graph TD
 *   **Decision Strategy**: The supervisor uses structured output tool-calling (`create_supervisor` under `langgraph_supervisor`) to decide whether to invoke the next agent or finish based on the current messages log state.
 *   **Prompt**:
     ```
-    You are the team supervisor for EduGraph, an AI-powered curriculum modernization and generation system.
-    Your team consists of 4 specialized agents: syllabus_reader_agent, search_agent, curriculum_writer_agent, quiz_exercise_agent.
+    You are the team supervisor for EduGraph, an AI-powered curriculum generation system.
+    Your team consists of 3 specialized agents: search_agent, curriculum_writer_agent, quiz_exercise_agent.
     Route requests in exact sequence and compile findings to output.
     ```
 
-### 2. `syllabus_reader_agent`
-*   **Role**: Extracts course attributes, hours, and modules from raw JSON contents.
-*   **Tools**: `read_syllabus` (custom python tool for local file or string parsing).
-*   **Input**: Raw JSON payload.
-*   **Output**: Structured textual syllabus overview containing modules, tech stacks, and gaps.
-
-### 3. `search_agent`
+### 2. `search_agent`
 *   **Role**: Conducts web research to fetch real-world skill requirements and trending frameworks.
 *   **Tools**: `TavilySearch` (configured dynamically using settings API keys).
 *   **Input**: Syllabus topics or generation topic.
 *   **Output**: Multi-page styled web search summary documenting skills gaps and industry tooling standard replacements.
 
-### 4. `curriculum_writer_agent`
+### 3. `curriculum_writer_agent`
 *   **Role**: Crafts academic lesson plans, timelines, recommended resource reading, and objectives.
 *   **Tools**: None (pure LLM reasoning).
-*   **Input**: Search reports and parsed syllabus gaps.
+*   **Input**: Search reports.
 *   **Output**: Markdown document containing Course outline, lesson timings, and academic modules.
 
-### 5. `quiz_exercise_agent`
+### 4. `quiz_exercise_agent`
 *   **Role**: Designs interactive learning materials (MCQ questions with explanations) and progressive coding challenges.
 *   **Tools**: None (pure LLM JSON parser).
 *   **Input**: Finalized Markdown curriculum document.
@@ -84,10 +75,6 @@ All agents coordinate in LangGraph by contributing to a shared state (`MessagesS
 ---
 
 ## 🛠️ Tools Documentation
-
-### `read_syllabus`
-*   **Signature**: `read_syllabus(syllabus_input: str) -> str`
-*   **Operation**: Evaluates if the input matches a valid filesystem path (e.g., `data/sample_syllabus.json`). If so, reads from file; otherwise, evaluates and parses as a raw JSON string.
 
 ### `TavilySearch`
 *   **Signature**: Dynamically generated via factory `create_tavily_tool(api_key: str)`
@@ -122,7 +109,6 @@ CREATE TABLE generations (
     curriculum_report TEXT,
     quizzes_data TEXT,
     search_results TEXT,
-    syllabus_summary TEXT,
     status TEXT DEFAULT 'processing',
     error_message TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -191,15 +177,13 @@ The database SQLite file (`backend/edugraph.db`) is mapped locally to your host 
 .
 ├── backend/
 │   ├── app/
-│   │   ├── agents/            # Multi-agent graph setups & prompts
+│   │   ├── agents/            # Multi-agent graph setups & prompts (search, writer, assessment)
 │   │   ├── routes/            # FastAPI settings, log CRUD, and websockets
-│   │   ├── tools/             # Syllabus parsers & Tavily tools
+│   │   ├── tools/             # Tavily tools
 │   │   ├── config.py
 │   │   ├── database.py        # SQLAlchemy async setup
 │   │   ├── models.py          # SQLite model mappings
 │   │   └── main.py            # CORS middlewares and subroutes
-│   ├── data/
-│   │   └── sample_syllabus.json
 │   ├── requirements.txt
 │   └── run.py
 │
@@ -208,9 +192,9 @@ The database SQLite file (`backend/edugraph.db`) is mapped locally to your host 
     │   ├── app/
     │   │   ├── history/       # Generation log list & review page
     │   │   ├── settings/      # Credential configuration page
-    │   │   ├── globals.css    # Premium glassmorphism dark system
+    │   │   ├── globals.css    # Sleek 2026 SaaS Light Mode styling system
     │   │   ├── layout.js
-    │   │   └── page.js        # Uploader, stepper, and report container
+    │   │   └── page.js        # Form input, agent stepper, and modules report container
     │   ├── components/        # Modulized accordion, quiz & progress stepper widgets
     │   └── lib/
     │       └── api.js         # WebSocket and REST request interfaces

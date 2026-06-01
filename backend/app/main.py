@@ -29,13 +29,6 @@ app.include_router(generate.router)
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok", "agents": [
-        "team_supervisor", "syllabus_reader_agent", "search_agent",
+        "team_supervisor", "search_agent",
         "curriculum_writer_agent", "quiz_exercise_agent"
     ]}
-
-@app.get("/api/sample-syllabus")
-async def get_sample_syllabus():
-    import json
-    from pathlib import Path
-    path = Path(__file__).parent.parent / "data" / "sample_syllabus.json"
-    return json.loads(path.read_text())

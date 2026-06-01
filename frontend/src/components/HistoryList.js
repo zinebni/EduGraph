@@ -71,7 +71,6 @@ export default function HistoryList({ onSelect }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {generations.map((item) => {
-        const isModernize = item.mode === 'modernize';
         const isComplete = item.status === 'complete';
         const isError = item.status === 'error';
 
@@ -85,7 +84,7 @@ export default function HistoryList({ onSelect }) {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              background: 'rgba(255, 255, 255, 0.02)',
+              background: '#ffffff',
               border: '1px solid var(--border-glass)',
               borderRadius: 'var(--radius-lg)',
               transition: 'all var(--transition-fast)'
@@ -94,8 +93,8 @@ export default function HistoryList({ onSelect }) {
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span className={`badge ${isModernize ? 'badge-modernize' : 'badge-generate'}`} style={{ fontSize: '10px' }}>
-                  {isModernize ? 'Modernize' : 'Generate'}
+                <span className="badge badge-generate" style={{ fontSize: '10px' }}>
+                  Generate
                 </span>
                 <span style={{ 
                   width: '8px', 
@@ -126,7 +125,7 @@ export default function HistoryList({ onSelect }) {
                 padding: '8px 16px',
                 fontSize: '12px',
                 borderColor: 'rgba(239, 68, 68, 0.2)',
-                color: '#fca5a5'
+                color: 'var(--accent-error)'
               }}
             >
               🗑️ Delete
@@ -134,10 +133,10 @@ export default function HistoryList({ onSelect }) {
 
             <style>{`
               .history-list-card:hover {
-                background: rgba(255, 255, 255, 0.04) !important;
-                border-color: rgba(99, 102, 241, 0.3) !important;
+                background: #ffffff !important;
+                border-color: rgba(99, 102, 241, 0.2) !important;
                 transform: translateY(-2px);
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                box-shadow: var(--shadow-hover);
               }
             `}</style>
           </div>
