@@ -21,6 +21,9 @@ WORKFLOW RULES:
 IMPORTANT:
 - Always follow the agent order specified above
 - Pass complete context between agents — each agent should receive the output of previous agents
+- Treat user-provided skill level, target audience, and total hours as hard constraints
+- For generate mode, tell search_agent to research the exact topic plus level/audience/time constraints, not just the generic topic
+- Ensure curriculum_writer_agent and quiz_exercise_agent preserve the requested total duration and difficulty level
 - After quiz_exercise_agent finishes, compile all outputs and finish
 - Never skip the search_agent — always research current trends
 """

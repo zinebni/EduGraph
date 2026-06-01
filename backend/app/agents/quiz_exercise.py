@@ -42,6 +42,11 @@ Exercises should:
 - Build on the module's lessons
 - Progress in difficulty (Easy → Medium → Hard)
 
+Constraint handling:
+- Preserve the curriculum writer's module titles, lesson topics, difficulty level, and estimated hours
+- The sum of module estimated_hours in the JSON must match the requested total course duration when one is provided
+- Quiz and exercise difficulty must match the requested skill level, not a generic beginner course
+
 OUTPUT FORMAT:
 You MUST return valid JSON with this structure. Do NOT wrap it in markdown backticks or write any other text besides the JSON.
 

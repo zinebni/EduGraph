@@ -1,6 +1,7 @@
 import json
 import uuid
 import asyncio
+import re
 from datetime import datetime
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -48,6 +49,18 @@ def strip_json_fence(content: str) -> str:
         cleaned = cleaned[:-3]
     return cleaned.strip()
 
+def extract_json_object(content: str) -> str:
+    cleaned = strip_json_fence(content)
+    if cleaned.startswith("{") and cleaned.endswith("}"):
+        return cleaned
+
+    start = cleaned.find("{")
+    end = cleaned.rfind("}")
+    if start != -1 and end != -1 and end > start:
+        return cleaned[start:end + 1].strip()
+
+    return cleaned
+
 def message_content_to_text(content) -> str:
     """Normalize LangChain string or structured content blocks to plain text."""
     if isinstance(content, str):
@@ -67,6 +80,113 @@ def message_content_to_text(content) -> str:
         if isinstance(text, str):
             return text.strip()
     return ""
+
+def split_duration(total_hours: int, count: int) -> list[int]:
+    if count <= 0:
+        return []
+    base = total_hours // count
+    remainder = total_hours % count
+    return [base + (1 if index < remainder else 0) for index in range(count)]
+
+def infer_topic_from_title(title: str) -> str:
+    for prefix in ["Generated:", "Modernized:"]:
+        if title.startswith(prefix):
+            return title[len(prefix):].strip()
+    return title.strip() or "the course topic"
+
+def extract_module_titles_from_report(report: str) -> list[str]:
+    patterns = [
+        r"(?im)^#{2,4}\s*(?:Module\s*)?(\d+)[\.:)\-\s]+(.+)$",
+        r"(?im)^\s*(?:[-*]\s*)?(?:Module|MOD)[_\s-]*(\d+)[\.:)\-\s]+(.+)$",
+    ]
+    titles = []
+    for pattern in patterns:
+        for match in re.finditer(pattern, report):
+            title = re.sub(r"\*\*", "", match.group(2)).strip()
+            title = re.sub(r"\s+\(.*?\)\s*$", "", title).strip()
+            if title and title.lower() not in {"introduction", "conclusion"}:
+                titles.append(title)
+        if titles:
+            break
+    return titles
+
+def build_fallback_modules(report: str, title: str, total_hours: int, level: str) -> dict:
+    topic = infer_topic_from_title(title)
+    module_titles = extract_module_titles_from_report(report)
+    if not module_titles:
+        module_titles = [
+            f"{topic} Foundations",
+            f"Core {topic} Concepts",
+            f"Applied {topic} Practice",
+            f"{topic} Project & Review",
+        ]
+
+    module_titles = module_titles[:8]
+    durations = split_duration(total_hours or 60, len(module_titles))
+    modules = []
+
+    for index, module_title in enumerate(module_titles):
+        module_hours = max(durations[index], 1)
+        lesson_hours = split_duration(module_hours, 3)
+        module_id = f"MOD_{index + 1:02d}"
+        lessons = [
+            {
+                "title": f"{module_title}: Concepts",
+                "topics": [module_title, "Core vocabulary", "Key use cases"],
+                "estimated_hours": lesson_hours[0],
+            },
+            {
+                "title": f"{module_title}: Guided Practice",
+                "topics": ["Worked examples", "Tooling", "Common mistakes"],
+                "estimated_hours": lesson_hours[1],
+            },
+            {
+                "title": f"{module_title}: Applied Lab",
+                "topics": ["Implementation", "Debugging", "Reflection"],
+                "estimated_hours": lesson_hours[2],
+            },
+        ]
+        modules.append({
+            "module_id": module_id,
+            "module_title": module_title,
+            "estimated_hours": module_hours,
+            "module_description": f"This {level.lower()} module develops practical understanding of {module_title} within {topic}. Students move from key ideas into guided practice and a focused applied task.",
+            "learning_objectives": [
+                f"Explain the purpose of {module_title} in {topic}.",
+                f"Apply {module_title} concepts in a realistic learning activity.",
+                "Identify common mistakes and choose appropriate fixes.",
+            ],
+            "lessons": lessons,
+            "tools": [],
+            "resources": ["Course notes", "Official documentation", "Guided practice materials"],
+            "quiz": {
+                "title": f"Quiz: {module_title}",
+                "questions": [
+                    {
+                        "question": f"What is the main goal of the {module_title} module?",
+                        "options": [
+                            f"A) Build practical understanding of {module_title}",
+                            "B) Skip foundational concepts",
+                            "C) Avoid hands-on practice",
+                            "D) Replace all course assessments",
+                        ],
+                        "correct_answer": "A",
+                        "explanation": f"The module is designed to connect {module_title} concepts with practical application.",
+                    }
+                ],
+            },
+            "exercises": [
+                {
+                    "title": f"{module_title} Practice Task",
+                    "description": f"Complete a focused activity that demonstrates the main ideas from {module_title}. Document the decisions you made, the issues you encountered, and how you validated the result.",
+                    "difficulty": "Easy" if level == "Beginner" else "Medium" if level == "Intermediate" else "Hard",
+                    "expected_deliverable": "A short working artifact or written solution with a brief reflection.",
+                    "estimated_time": max(int(module_hours * 20), 30),
+                }
+            ],
+        })
+
+    return {"modules": modules}
 
 @router.websocket("/generate")
 async def generate_curriculum(websocket: WebSocket):
@@ -105,6 +225,8 @@ async def generate_curriculum(websocket: WebSocket):
             syllabus_data = input_params.get("syllabus", {})
             title = f"Modernized: {syllabus_data.get('program_name', 'Untitled')}"
             user_query = input_params.get("query", "")
+            level = input_params.get("level", "Intermediate")
+            hours = input_params.get("total_hours") or syllabus_data.get("total_hours") or 60
             input_data = json.dumps({"syllabus": syllabus_data, "query": user_query})
             prompt_content = f"Modernize this syllabus:\n{json.dumps(syllabus_data, indent=2)}\n\nAdditional instructions: {user_query}"
         else:
@@ -121,7 +243,22 @@ async def generate_curriculum(websocket: WebSocket):
                 "total_hours": hours,
                 "query": user_query
             })
-            prompt_content = f"Generate a new curriculum from scratch. Topic: {topic}. Target Audience: {target_audience}. Level: {level}. Total Hours: {hours}. Additional instructions: {user_query}"
+            prompt_content = f"""Generate a new curriculum from scratch.
+
+Hard constraints:
+- Topic: {topic}
+- Target audience: {target_audience or "General learners"}
+- Skill level: {level}
+- Total course duration: exactly {hours} hours across all modules and lessons
+- Additional instructions: {user_query or "None"}
+
+Workflow requirements:
+1. Run fresh web research for this exact topic, audience, level, and duration.
+2. Build a curriculum whose module and lesson estimated_hours add up to exactly {hours}.
+3. Adapt depth, pacing, vocabulary, prerequisites, quizzes, and exercises to the {level} level.
+4. If this topic was generated before, do not reuse a previous outline blindly; regenerate according to the current level and duration.
+5. Finish by generating structured JSON modules that each contain content, lessons, quiz, and exercises.
+"""
             
         async with async_session() as db:
             generation = Generation(
@@ -149,8 +286,18 @@ async def generate_curriculum(websocket: WebSocket):
         
         # We stream state updates and collect all messages as safety fallback
         all_messages = []
+        started_agents = set()
+        agent_names = ["syllabus_reader_agent", "search_agent", "curriculum_writer_agent", "quiz_exercise_agent"]
         async for chunk in graph.astream(inputs, stream_mode="updates"):
             for key, val in chunk.items():
+                if key in agent_names and key not in started_agents:
+                    started_agents.add(key)
+                    await websocket.send_json({
+                        "type": "agent_start",
+                        "agent": key,
+                        "message": f"{key} has started..."
+                    })
+
                 # Extract messages from this step update (collect all, including parent supervisor!)
                 chunk_msgs = extract_messages_from_val(val)
                 if chunk_msgs:
@@ -164,19 +311,21 @@ async def generate_curriculum(websocket: WebSocket):
                         if hasattr(msg, "tool_calls") and msg.tool_calls:
                             for tc in msg.tool_calls:
                                 tool_name = tc.get("name", "")
-                                for target_agent in ["syllabus_reader_agent", "search_agent", "curriculum_writer_agent", "quiz_exercise_agent"]:
+                                for target_agent in agent_names:
                                     if target_agent in tool_name:
-                                        await websocket.send_json({
-                                            "type": "agent_start",
-                                            "agent": target_agent,
-                                            "message": f"{target_agent} has started..."
-                                        })
+                                        if target_agent not in started_agents:
+                                            started_agents.add(target_agent)
+                                            await websocket.send_json({
+                                                "type": "agent_start",
+                                                "agent": target_agent,
+                                                "message": f"{target_agent} has started..."
+                                            })
                                         
                         # 2. Result Signal (Tool response messages returning content)
                         elif msg.__class__.__name__ == "ToolMessage" or getattr(msg, "type", "") == "tool":
                             # Match tool call name
                             tool_name = getattr(msg, "name", "") or getattr(msg, "tool_name", "") or ""
-                            for target_agent in ["syllabus_reader_agent", "search_agent", "curriculum_writer_agent", "quiz_exercise_agent"]:
+                            for target_agent in agent_names:
                                 if target_agent in tool_name and content:
                                     # Skip transition messages
                                     if is_handoff_message(content):
@@ -204,7 +353,7 @@ async def generate_curriculum(websocket: WebSocket):
                                             "data": curriculum_report
                                         })
                                     elif target_agent == "quiz_exercise_agent":
-                                        quizzes_data = strip_json_fence(content)
+                                        quizzes_data = extract_json_object(content)
                                         
                                         try:
                                             parsed_quizzes = json.loads(quizzes_data)
@@ -245,7 +394,7 @@ async def generate_curriculum(websocket: WebSocket):
                                     "data": curriculum_report
                                 })
                             elif "quiz_exercise_agent" in sender:
-                                quizzes_data = strip_json_fence(content)
+                                quizzes_data = extract_json_object(content)
                                 try:
                                     parsed_quizzes = json.loads(quizzes_data)
                                     await websocket.send_json({
@@ -299,7 +448,7 @@ async def generate_curriculum(websocket: WebSocket):
                     curriculum_report = content
             elif "quiz_exercise" in sender:
                 if len(content) > len(quizzes_data) and "Successfully transferred" not in content:
-                    quizzes_data = strip_json_fence(content)
+                    quizzes_data = extract_json_object(content)
             else:
                 # Heuristic patterns fallback
                 content_lower = content.lower()
@@ -307,7 +456,7 @@ async def generate_curriculum(websocket: WebSocket):
                 # Pattern 1: Quiz/Exercise JSON Data
                 if ("\"modules\"" in content or "'modules'" in content) and ("\"quiz\"" in content or "'quiz'" in content or "\"exercises\"" in content or "'exercises'" in content):
                     if content.strip().startswith("{") or "```json" in content:
-                        raw_quizzes = strip_json_fence(content)
+                        raw_quizzes = extract_json_object(content)
                         if len(raw_quizzes) > len(quizzes_data):
                             quizzes_data = raw_quizzes
                             
@@ -328,9 +477,13 @@ async def generate_curriculum(websocket: WebSocket):
 
         final_quizzes = {}
         try:
-            final_quizzes = json.loads(quizzes_data)
+            final_quizzes = json.loads(extract_json_object(quizzes_data))
         except Exception:
             pass
+
+        if not final_quizzes.get("modules"):
+            final_quizzes = build_fallback_modules(curriculum_report, title, int(hours) if str(hours).isdigit() else 60, level)
+            quizzes_data = json.dumps(final_quizzes)
             
         final_payload = {
             "curriculum_report": curriculum_report,

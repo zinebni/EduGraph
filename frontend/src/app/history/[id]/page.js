@@ -5,6 +5,35 @@ import { useParams, useRouter } from 'next/navigation';
 import ModuleAccordion from '@/components/ModuleAccordion';
 import { getGeneration } from '@/lib/api';
 
+function parseQuizData(value) {
+  if (!value) return {};
+  if (typeof value === 'object') return value;
+  if (typeof value !== 'string') return {};
+
+  let cleaned = value.trim();
+  if (cleaned.startsWith('```json')) {
+    cleaned = cleaned.slice(7);
+  } else if (cleaned.startsWith('```')) {
+    cleaned = cleaned.slice(3);
+  }
+  if (cleaned.endsWith('```')) {
+    cleaned = cleaned.slice(0, -3);
+  }
+  cleaned = cleaned.trim();
+
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start !== -1 && end !== -1 && end > start) {
+    cleaned = cleaned.slice(start, end + 1);
+  }
+
+  try {
+    return JSON.parse(cleaned);
+  } catch (err) {
+    return {};
+  }
+}
+
 export default function GenerationDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -19,15 +48,7 @@ export default function GenerationDetailPage() {
 
       try {
         const data = await getGeneration(params.id);
-        let quizzes = data.quizzes_data;
-
-        if (typeof quizzes === 'string' && quizzes) {
-          try {
-            quizzes = JSON.parse(quizzes);
-          } catch (err) {
-            quizzes = {};
-          }
-        }
+        const quizzes = parseQuizData(data.quizzes_data);
 
         setGeneration({
           ...data,
@@ -69,6 +90,8 @@ export default function GenerationDetailPage() {
     );
   }
 
+  const modules = generation.quizzes_data?.modules || [];
+
   return (
     <div className="container animate-slide-up">
       <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
@@ -96,7 +119,13 @@ export default function GenerationDetailPage() {
               Each module is divided into learning content, lesson topics, a knowledge check, and hands-on practice.
             </p>
           </div>
-          <ModuleAccordion modules={generation.quizzes_data?.modules || []} />
+          {modules.length > 0 ? (
+            <ModuleAccordion modules={modules} />
+          ) : (
+            <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
+              This saved generation does not include structured module data. Generate it again to create divided modules with lessons, quizzes, and exercises.
+            </div>
+          )}
         </div>
       </div>
     </div>

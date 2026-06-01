@@ -16,6 +16,7 @@ export default function GeneratePage() {
   const [finalResult, setFinalResult] = useState(null);
   const [generationId, setGenerationId] = useState(null);
   const wsRef = useRef(null);
+  const activeAgentRef = useRef(null);
 
   // Auto scroll to agent progress or final report
   const progressRef = useRef(null);
@@ -35,6 +36,7 @@ export default function GeneratePage() {
     setGenerationMode(requestData.mode);
     setErrorMessage('');
     setActiveAgent(null);
+    activeAgentRef.current = null;
     setCompletedAgents([]);
     setAgentResults({});
     setFinalResult(null);
@@ -43,11 +45,14 @@ export default function GeneratePage() {
     // Establish socket connection and start generating
     const ws = connectAndGenerate(requestData, {
       onAgentStart: (agent, message) => {
+        const previousAgent = activeAgentRef.current;
+        activeAgentRef.current = agent;
         setActiveAgent(agent);
         setCompletedAgents((prev) => {
-          if (prev.includes(agent)) return prev;
-          // Add previous active agent to completed
-          return activeAgent && activeAgent !== agent ? [...prev, activeAgent] : prev;
+          if (!previousAgent || previousAgent === agent || prev.includes(previousAgent)) {
+            return prev;
+          }
+          return [...prev, previousAgent];
         });
       },
       onAgentResult: (agent, data) => {
@@ -59,11 +64,13 @@ export default function GeneratePage() {
         setGenerationId(id);
         setStatus('complete');
         setActiveAgent(null);
+        activeAgentRef.current = null;
       },
       onError: (message) => {
         setErrorMessage(message);
         setStatus('error');
         setActiveAgent(null);
+        activeAgentRef.current = null;
       },
       onClose: () => {
         // Safe to ignore if already complete or error
@@ -78,6 +85,7 @@ export default function GeneratePage() {
     setGenerationMode(null);
     setErrorMessage('');
     setActiveAgent(null);
+    activeAgentRef.current = null;
     setCompletedAgents([]);
     setAgentResults({});
     setFinalResult(null);
@@ -155,7 +163,13 @@ export default function GeneratePage() {
                 Each module is divided into learning content, lesson topics, a knowledge check, and hands-on practice.
               </p>
             </div>
-            <ModuleAccordion modules={finalResult.quizzes_data?.modules || []} />
+            {(finalResult.quizzes_data?.modules || []).length > 0 ? (
+              <ModuleAccordion modules={finalResult.quizzes_data.modules} />
+            ) : (
+              <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
+                The curriculum report was created, but structured modules were not returned. Try generating again so the assessment agent can produce lessons, quizzes, and exercises.
+              </div>
+            )}
           </div>
         </div>
       )}

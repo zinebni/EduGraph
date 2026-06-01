@@ -49,7 +49,10 @@ Using the syllabus analysis (if provided) and market research data from previous
 IMPORTANT RULES:
 - Be specific — mention actual technologies, tools, and frameworks by name
 - Each module should have 3-5 detailed lessons
-- Total curriculum should have 5-8 modules
+- Total curriculum should usually have 5-8 modules, unless the requested duration clearly requires fewer or more
+- If the user provides a total course duration, distribute that duration across modules and lessons so all lesson estimated hours add up exactly to the requested total
+- If the user provides a skill level, adapt prerequisites, module depth, lesson pacing, terminology, projects, and assessment difficulty to that exact level
+- Include estimated_hours for every module and lesson
 - Write in professional academic language
 - Format everything in clean Markdown
 """
