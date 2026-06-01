@@ -10,10 +10,10 @@ export default function ModuleAccordion({ modules }) {
   const getModuleKey = (mod, index) => mod.module_id || `module-${index}`;
 
   useEffect(() => {
-    if (modules && modules.length > 0 && openModuleId === null) {
+    if (modules && modules.length > 0) {
       setOpenModuleId(getModuleKey(modules[0], 0));
     }
-  }, [modules, openModuleId]);
+  }, [modules]);
 
   const toggleModule = (id) => {
     setOpenModuleId(openModuleId === id ? null : id);

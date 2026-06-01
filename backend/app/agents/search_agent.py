@@ -18,4 +18,8 @@ Perform at least 3 different searches to cover:
 3. Educational best practices and course structures
 
 Compile your findings into a structured research report that the curriculum writer can use.
+
+CRITICAL CONSTRAINT:
+- Your ONLY task is to perform web search and summarize research findings.
+- Do NOT generate the final curriculum, modules list, lesson breakdowns, quizzes, or coding exercises. Focus purely on background market research and trend analysis. Leave the design and structured output strictly to the curriculum writer and assessment specialist agents.
 """

@@ -55,4 +55,5 @@ IMPORTANT RULES:
 - Include estimated_hours for every module and lesson
 - Write in professional academic language
 - Format everything in clean Markdown
+- CRITICAL: Your only job is to write the comprehensive curriculum report in Markdown. Under NO circumstances should you output structured JSON or quizzes/exercises. Leave the quiz and exercises generation completely to the quiz_exercise_agent.
 """

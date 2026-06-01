@@ -95,207 +95,7 @@ def extract_module_titles_from_report(report: str) -> list[str]:
     return titles
 
 
-def distribute_module_time(module_hours: float) -> tuple[list[float], int, int, int]:
-    # Returns (lesson_hours_list, exercise1_mins, exercise2_mins, quiz_mins)
-    quiz_mins = 15
-    if module_hours <= 1.0:
-        # Special case for very small modules
-        return [module_hours], 0, 0, 0
-    
-    # 70% of time to lessons (rounded to nearest 0.5 hours)
-    lessons_total = max(1.0, float(int(module_hours * 0.7 * 2) / 2))
-    # remaining time in minutes
-    remaining_mins = int((module_hours - lessons_total) * 60)
-    
-    # subtract quiz time
-    exercise_total_mins = max(0, remaining_mins - quiz_mins)
-    
-    # split lessons into 3 lessons
-    base = lessons_total / 3
-    l1 = float(int(base * 2) / 2)
-    l2 = float(int(base * 2) / 2)
-    l3 = round((lessons_total - l1 - l2) * 2) / 2
-    if l3 <= 0:
-        l3 = 0.5
-    lesson_hours_list = [l1, l2, l3]
-    
-    # split exercise mins: E1 (40%), E2 (60%)
-    if exercise_total_mins > 0:
-        e1 = int(exercise_total_mins * 0.4)
-        # round to nearest 5 minutes
-        e1 = round(e1 / 5) * 5
-        e2 = exercise_total_mins - e1
-        if e2 < 0:
-            e2 = 0
-    else:
-        e1, e2 = 0, 0
-        
-    return lesson_hours_list, e1, e2, quiz_mins
 
-
-def build_fallback_modules(report: str, title: str, total_hours: int, level: str) -> dict:
-    topic = infer_topic_from_title(title)
-    module_titles = extract_module_titles_from_report(report)
-    if not module_titles:
-        module_titles = [
-            f"{topic} Foundations",
-            f"Core {topic} Concepts",
-            f"Applied {topic} Practice",
-            f"{topic} Project & Review",
-        ]
-
-    module_titles = module_titles[:8]
-    durations = split_duration(total_hours or 60, len(module_titles))
-    modules = []
-
-    for index, module_title in enumerate(module_titles):
-        module_hours = max(durations[index], 1)
-        lesson_hours, e1, e2, quiz_mins = distribute_module_time(module_hours)
-        module_id = f"MOD_{index + 1:02d}"
-        lessons = [
-            {
-                "title": f"{module_title}: Concepts",
-                "topics": [module_title, "Core vocabulary", "Key use cases"],
-                "estimated_hours": lesson_hours[0],
-            },
-            {
-                "title": f"{module_title}: Guided Practice",
-                "topics": ["Worked examples", "Tooling", "Common mistakes"],
-                "estimated_hours": lesson_hours[1],
-            },
-            {
-                "title": f"{module_title}: Applied Lab",
-                "topics": ["Implementation", "Debugging", "Reflection"],
-                "estimated_hours": lesson_hours[2],
-            },
-        ]
-        diff_label = "Easy" if level == "Beginner" else "Medium" if level == "Intermediate" else "Hard"
-        modules.append({
-            "module_id": module_id,
-            "module_title": module_title,
-            "estimated_hours": module_hours,
-            "module_description": f"This {level.lower()} module develops practical understanding of {module_title} within {topic}. Students move from key ideas into guided practice and a focused applied task.",
-            "learning_objectives": [
-                f"Explain the purpose of {module_title} in {topic}.",
-                f"Apply {module_title} concepts in a realistic learning activity.",
-                "Identify common mistakes and choose appropriate fixes.",
-            ],
-            "lessons": lessons,
-            "tools": [],
-            "resources": ["Course notes", "Official documentation", "Guided practice materials"],
-            "quiz": {
-                "title": f"Quiz: {module_title}",
-                "questions": [
-                    {
-                        "question": f"What is the primary learning objective of the {module_title} module?",
-                        "options": [
-                            "A) Build practical understanding of core concepts and apply them",
-                            "B) Memorize definitions without practical context",
-                            "C) Skip directly to advanced applications",
-                            "D) Complete a full production-grade project independently",
-                        ],
-                        "correct_answer": "A",
-                        "explanation": f"The module is designed to connect {module_title} concepts with practical application through structured activities.",
-                    },
-                    {
-                        "question": f"Which of the following best describes the role of {module_title} within {topic}?",
-                        "options": [
-                            "A) It is entirely optional and can be skipped",
-                            f"B) It provides foundational knowledge essential to {topic}",
-                            "C) It replaces all other modules in the curriculum",
-                            "D) It is only relevant for advanced practitioners",
-                        ],
-                        "correct_answer": "B",
-                        "explanation": f"Each module builds essential knowledge; {module_title} is a core component of the overall {topic} curriculum.",
-                    },
-                    {
-                        "question": f"What should a student be able to do after completing the {module_title} module?",
-                        "options": [
-                            "A) Nothing practical, only theoretical knowledge",
-                            "B) Only recite definitions from memory",
-                            f"C) Demonstrate applied understanding of {module_title} concepts",
-                            "D) Teach the entire course to others",
-                        ],
-                        "correct_answer": "C",
-                        "explanation": "The module is structured to ensure students can apply what they learned, not just recall facts.",
-                    },
-                    {
-                        "question": f"What is a common mistake students make when studying {module_title}?",
-                        "options": [
-                            "A) Practicing too much",
-                            "B) Focusing only on theory without hands-on exercises",
-                            "C) Reading the documentation thoroughly",
-                            "D) Asking too many questions during lab sessions",
-                        ],
-                        "correct_answer": "B",
-                        "explanation": "Balancing theory with practice is key; skipping hands-on work is a common pitfall.",
-                    },
-                    {
-                        "question": f"How does the guided practice section in {module_title} help students?",
-                        "options": [
-                            "A) It provides worked examples that bridge theory and application",
-                            "B) It replaces the need for any lecture content",
-                            "C) It tests students without any preparation",
-                            "D) It is identical to the applied lab section",
-                        ],
-                        "correct_answer": "A",
-                        "explanation": "Guided practice uses worked examples to help students transition from understanding concepts to applying them independently.",
-                    },
-                ],
-            },
-            "exercises": [
-                {
-                    "title": f"{module_title} Practice Task",
-                    "description": f"Complete a focused activity that demonstrates the main ideas from {module_title}. Document the decisions you made, the issues you encountered, and how you validated the result.",
-                    "difficulty": diff_label,
-                    "expected_deliverable": "A short working artifact or written solution with a brief reflection.",
-                    "estimated_time": e1,
-                },
-                {
-                    "title": f"{module_title} Extension Challenge",
-                    "description": f"Extend the practice task by adding an additional feature or analysis related to {module_title}. Explain your design choices and trade-offs.",
-                    "difficulty": "Medium" if level == "Beginner" else "Hard",
-                    "expected_deliverable": "An enhanced solution with a written explanation of design decisions.",
-                    "estimated_time": e2,
-                },
-            ],
-        })
-
-    return {"modules": modules}
-
-
-def build_fallback_curriculum_report(title: str, topic: str, total_hours: int, level: str, search_results: str) -> str:
-    module_titles = [
-        f"{topic} Foundations",
-        f"Core {topic} Concepts",
-        f"Applied {topic} Practice",
-        f"{topic} Project & Review",
-    ]
-    durations = split_duration(total_hours or 60, len(module_titles))
-    module_lines = []
-    for index, module_title in enumerate(module_titles):
-        module_lines.append(
-            f"### Module {index + 1}: {module_title}\n"
-            f"- Module ID: MOD_{index + 1:02d}\n"
-            f"- Estimated hours: {durations[index]}\n"
-            f"- Description: A {level.lower()}-level module covering the essential concepts, guided practice, and applied work for {module_title}.\n"
-            f"- Lessons:\n"
-            f"  - Concepts and vocabulary\n"
-            f"  - Guided examples and tooling\n"
-            f"  - Applied lab and review"
-        )
-
-    return (
-        f"# {title}\n\n"
-        f"## Introduction\n"
-        f"This curriculum is designed for {level.lower()} learners and is scoped to exactly {total_hours} hours.\n\n"
-        f"## Research Context\n"
-        f"{search_results[:1200] if search_results else 'The curriculum is based on the requested topic and current professional expectations.'}\n\n"
-        f"## Modernized Course Modules\n\n"
-        + "\n\n".join(module_lines)
-        + "\n\n## Conclusion\n"
-        f"Students complete the course with a structured understanding of {topic} and practical experience through module exercises."
-    )
 
 
 AGENT_NAMES = [
@@ -401,6 +201,7 @@ Workflow requirements:
         quizzes_data = ""
 
         all_messages = []
+        all_messages_with_agents = []
         sent_starts: set[str] = set()
         sent_results: set[str] = set()
 
@@ -426,6 +227,8 @@ Workflow requirements:
                     continue
 
                 all_messages.extend(messages)
+                for msg in messages:
+                    all_messages_with_agents.append((matched_agent, msg))
 
                 for msg in messages:
                     content = message_content_to_text(getattr(msg, "content", ""))
@@ -449,7 +252,7 @@ Workflow requirements:
                     msg_type = getattr(msg, "type", "")
                     msg_class = msg.__class__.__name__
 
-                    source_agent = _match_agent(sender)
+                    source_agent = matched_agent or _match_agent(sender)
 
                     if not source_agent and (msg_class == "ToolMessage" or msg_type == "tool"):
                         tool_name = getattr(msg, "name", "") or getattr(msg, "tool_name", "") or ""
@@ -529,12 +332,12 @@ Workflow requirements:
                             gen_record.quizzes_data = quizzes_data
                         await db.commit()
 
-        for msg in all_messages:
+        for agent_name, msg in all_messages_with_agents:
             content = message_content_to_text(getattr(msg, "content", ""))
             if not content or is_handoff_message(content):
                 continue
 
-            sender = getattr(msg, "name", "") or ""
+            sender = agent_name or getattr(msg, "name", "") or ""
 
             if "syllabus_reader" in sender:
                 if len(content) > len(syllabus_summary) and "Successfully transferred" not in content:
@@ -576,43 +379,10 @@ Workflow requirements:
             pass
 
         if not curriculum_report:
-            if "curriculum_writer_agent" not in sent_starts:
-                sent_starts.add("curriculum_writer_agent")
-                await websocket.send_json({
-                    "type": "agent_start",
-                    "agent": "curriculum_writer_agent",
-                    "message": "curriculum_writer_agent has started..."
-                })
-            curriculum_report = build_fallback_curriculum_report(
-                title,
-                infer_topic_from_title(title),
-                int(hours) if str(hours).isdigit() else 60,
-                level,
-                search_results,
-            )
-            sent_results.add("curriculum_writer_agent")
-            await websocket.send_json({
-                "type": "agent_result",
-                "agent": "curriculum_writer_agent",
-                "data": curriculum_report
-            })
+            raise ValueError("Generation finished without a curriculum report from curriculum_writer_agent. Please try again.")
 
         if not final_quizzes.get("modules"):
-            if "quiz_exercise_agent" not in sent_starts:
-                sent_starts.add("quiz_exercise_agent")
-                await websocket.send_json({
-                    "type": "agent_start",
-                    "agent": "quiz_exercise_agent",
-                    "message": "quiz_exercise_agent has started..."
-                })
-            final_quizzes = build_fallback_modules(curriculum_report, title, int(hours) if str(hours).isdigit() else 60, level)
-            quizzes_data = json.dumps(final_quizzes)
-            sent_results.add("quiz_exercise_agent")
-            await websocket.send_json({
-                "type": "agent_result",
-                "agent": "quiz_exercise_agent",
-                "data": final_quizzes
-            })
+            raise ValueError("Generation finished without structured modules from quiz_exercise_agent. Please try again.")
 
         final_payload = {
             "curriculum_report": curriculum_report,
