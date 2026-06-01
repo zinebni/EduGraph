@@ -13,10 +13,12 @@ export default function SetupGuard({ children }) {
   useEffect(() => {
     if (pathname === '/settings') {
       setLoading(false);
+      setKeysConfigured(true);
       return;
     }
 
     async function checkKeys() {
+      setLoading(true);
       try {
         const settings = await getSettings();
         if (settings.google_api_key_set && settings.tavily_api_key_set) {

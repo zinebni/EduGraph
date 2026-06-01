@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { getHistory, deleteGeneration } from '@/lib/api';
 
 export default function HistoryList({ onSelect }) {
+  const router = useRouter();
   const [generations, setGenerations] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +40,14 @@ export default function HistoryList({ onSelect }) {
     }
   };
 
+  const handleOpen = (id) => {
+    if (onSelect) {
+      onSelect(id);
+      return;
+    }
+    router.push(`/history/${id}`);
+  };
+
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
@@ -68,7 +78,7 @@ export default function HistoryList({ onSelect }) {
         return (
           <div 
             key={item.id}
-            onClick={() => onSelect(item.id)}
+            onClick={() => handleOpen(item.id)}
             style={{
               padding: '24px 32px',
               cursor: 'pointer',
