@@ -215,16 +215,27 @@ export default function GeneratePage() {
       )}
 
       {status === 'processing' && (
-        <div ref={progressRef} className="glass-card animate-fade-in pulse-active" style={{ maxWidth: '700px', margin: '0 auto' }}>
-          <h2 style={{ marginBottom: '24px', textAlign: 'center', fontFamily: 'var(--font-heading)' }}>
+        <div ref={progressRef} className="glass-card animate-fade-in pulse-active" style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
+          <div className="loading-orb">
+            <span className="loading-orb-inner">🧠</span>
+          </div>
+          <h2 style={{ marginBottom: '12px', fontFamily: 'var(--font-heading)' }}>
             Orchestrating AI Educator Agent Team...
           </h2>
-          <AgentProgress 
-            mode={generationMode} 
-            activeAgent={activeAgent} 
-            completedAgents={completedAgents} 
-          />
-          <div style={{ marginTop: '32px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '20px', maxWidth: '520px', margin: '0 auto 20px auto' }}>
+            Our cooperative multi-agent team is researching the latest market trends, designing modules, and generating exercises.
+          </p>
+          <div className="progress-bar-container">
+            <div className="progress-bar-fill" />
+          </div>
+          <div style={{ textAlign: 'left', background: '#f8fafc', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)', marginBottom: '32px' }}>
+            <AgentProgress 
+              mode={generationMode} 
+              activeAgent={activeAgent} 
+              completedAgents={completedAgents} 
+            />
+          </div>
+          <div>
             <button className="btn btn-secondary" onClick={handleReset}>
               Cancel Generation
             </button>
