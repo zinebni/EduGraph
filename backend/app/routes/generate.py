@@ -188,6 +188,39 @@ def build_fallback_modules(report: str, title: str, total_hours: int, level: str
 
     return {"modules": modules}
 
+def build_fallback_curriculum_report(title: str, topic: str, total_hours: int, level: str, search_results: str) -> str:
+    module_titles = [
+        f"{topic} Foundations",
+        f"Core {topic} Concepts",
+        f"Applied {topic} Practice",
+        f"{topic} Project & Review",
+    ]
+    durations = split_duration(total_hours or 60, len(module_titles))
+    module_lines = []
+    for index, module_title in enumerate(module_titles):
+        module_lines.append(
+            f"### Module {index + 1}: {module_title}\n"
+            f"- Module ID: MOD_{index + 1:02d}\n"
+            f"- Estimated hours: {durations[index]}\n"
+            f"- Description: A {level.lower()}-level module covering the essential concepts, guided practice, and applied work for {module_title}.\n"
+            f"- Lessons:\n"
+            f"  - Concepts and vocabulary\n"
+            f"  - Guided examples and tooling\n"
+            f"  - Applied lab and review"
+        )
+
+    return (
+        f"# {title}\n\n"
+        f"## Introduction\n"
+        f"This curriculum is designed for {level.lower()} learners and is scoped to exactly {total_hours} hours.\n\n"
+        f"## Research Context\n"
+        f"{search_results[:1200] if search_results else 'The curriculum is based on the requested topic and current professional expectations.'}\n\n"
+        f"## Modernized Course Modules\n\n"
+        + "\n\n".join(module_lines)
+        + "\n\n## Conclusion\n"
+        f"Students complete the course with a structured understanding of {topic} and practical experience through module exercises."
+    )
+
 @router.websocket("/generate")
 async def generate_curriculum(websocket: WebSocket):
     await websocket.accept()
@@ -481,9 +514,42 @@ Workflow requirements:
         except Exception:
             pass
 
+        if not curriculum_report:
+            if "curriculum_writer_agent" not in started_agents:
+                started_agents.add("curriculum_writer_agent")
+                await websocket.send_json({
+                    "type": "agent_start",
+                    "agent": "curriculum_writer_agent",
+                    "message": "curriculum_writer_agent has started..."
+                })
+            curriculum_report = build_fallback_curriculum_report(
+                title,
+                infer_topic_from_title(title),
+                int(hours) if str(hours).isdigit() else 60,
+                level,
+                search_results,
+            )
+            await websocket.send_json({
+                "type": "agent_result",
+                "agent": "curriculum_writer_agent",
+                "data": curriculum_report
+            })
+
         if not final_quizzes.get("modules"):
+            if "quiz_exercise_agent" not in started_agents:
+                started_agents.add("quiz_exercise_agent")
+                await websocket.send_json({
+                    "type": "agent_start",
+                    "agent": "quiz_exercise_agent",
+                    "message": "quiz_exercise_agent has started..."
+                })
             final_quizzes = build_fallback_modules(curriculum_report, title, int(hours) if str(hours).isdigit() else 60, level)
             quizzes_data = json.dumps(final_quizzes)
+            await websocket.send_json({
+                "type": "agent_result",
+                "agent": "quiz_exercise_agent",
+                "data": final_quizzes
+            })
             
         final_payload = {
             "curriculum_report": curriculum_report,
