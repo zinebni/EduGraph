@@ -95,6 +95,44 @@ def extract_module_titles_from_report(report: str) -> list[str]:
     return titles
 
 
+def distribute_module_time(module_hours: float) -> tuple[list[float], int, int, int]:
+    # Returns (lesson_hours_list, exercise1_mins, exercise2_mins, quiz_mins)
+    quiz_mins = 15
+    if module_hours <= 1.0:
+        # Special case for very small modules
+        return [module_hours], 0, 0, 0
+    
+    # 70% of time to lessons (rounded to nearest 0.5 hours)
+    lessons_total = max(1.0, float(int(module_hours * 0.7 * 2) / 2))
+    # remaining time in minutes
+    remaining_mins = int((module_hours - lessons_total) * 60)
+    
+    # subtract quiz time
+    exercise_total_mins = max(0, remaining_mins - quiz_mins)
+    
+    # split lessons into 3 lessons
+    base = lessons_total / 3
+    l1 = float(int(base * 2) / 2)
+    l2 = float(int(base * 2) / 2)
+    l3 = round((lessons_total - l1 - l2) * 2) / 2
+    if l3 <= 0:
+        l3 = 0.5
+    lesson_hours_list = [l1, l2, l3]
+    
+    # split exercise mins: E1 (40%), E2 (60%)
+    if exercise_total_mins > 0:
+        e1 = int(exercise_total_mins * 0.4)
+        # round to nearest 5 minutes
+        e1 = round(e1 / 5) * 5
+        e2 = exercise_total_mins - e1
+        if e2 < 0:
+            e2 = 0
+    else:
+        e1, e2 = 0, 0
+        
+    return lesson_hours_list, e1, e2, quiz_mins
+
+
 def build_fallback_modules(report: str, title: str, total_hours: int, level: str) -> dict:
     topic = infer_topic_from_title(title)
     module_titles = extract_module_titles_from_report(report)
@@ -112,7 +150,7 @@ def build_fallback_modules(report: str, title: str, total_hours: int, level: str
 
     for index, module_title in enumerate(module_titles):
         module_hours = max(durations[index], 1)
-        lesson_hours = split_duration(module_hours, 3)
+        lesson_hours, e1, e2, quiz_mins = distribute_module_time(module_hours)
         module_id = f"MOD_{index + 1:02d}"
         lessons = [
             {
@@ -211,14 +249,14 @@ def build_fallback_modules(report: str, title: str, total_hours: int, level: str
                     "description": f"Complete a focused activity that demonstrates the main ideas from {module_title}. Document the decisions you made, the issues you encountered, and how you validated the result.",
                     "difficulty": diff_label,
                     "expected_deliverable": "A short working artifact or written solution with a brief reflection.",
-                    "estimated_time": max(int(module_hours * 20), 30),
+                    "estimated_time": e1,
                 },
                 {
                     "title": f"{module_title} Extension Challenge",
                     "description": f"Extend the practice task by adding an additional feature or analysis related to {module_title}. Explain your design choices and trade-offs.",
                     "difficulty": "Medium" if level == "Beginner" else "Hard",
                     "expected_deliverable": "An enhanced solution with a written explanation of design decisions.",
-                    "estimated_time": max(int(module_hours * 30), 45),
+                    "estimated_time": e2,
                 },
             ],
         })

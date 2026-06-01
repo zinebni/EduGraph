@@ -1,11 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import QuizCard from '@/components/QuizCard';
 import ExerciseCard from '@/components/ExerciseCard';
 
 export default function ModuleAccordion({ modules }) {
   const [openModuleId, setOpenModuleId] = useState(null);
+
+  const getModuleKey = (mod, index) => mod.module_id || `module-${index}`;
+
+  useEffect(() => {
+    if (modules && modules.length > 0 && openModuleId === null) {
+      setOpenModuleId(getModuleKey(modules[0], 0));
+    }
+  }, [modules, openModuleId]);
 
   const toggleModule = (id) => {
     setOpenModuleId(openModuleId === id ? null : id);
@@ -19,17 +27,28 @@ export default function ModuleAccordion({ modules }) {
     );
   }
 
-  const getModuleKey = (mod, index) => mod.module_id || `module-${index}`;
   const asArray = (value) => {
     if (Array.isArray(value)) return value;
     if (typeof value === 'string' && value.trim()) return [value];
     return [];
   };
-  const formatDuration = (mod) => {
-    if (mod.estimated_hours) return `${mod.estimated_hours}h`;
-    if (mod.estimated_time) return `${mod.estimated_time}m`;
-    if (mod.quiz?.questions?.length) return `${mod.quiz.questions.length * 10}m`;
-    return '50m';
+
+  const getModuleTimes = (mod) => {
+    const lessons = asArray(mod.lessons || mod.lesson_breakdown);
+    const lessonsSum = lessons.reduce((acc, l) => acc + parseFloat(l.estimated_hours || 0), 0);
+    const exercises = asArray(mod.exercises);
+    const exercisesSum = exercises.reduce((acc, e) => acc + parseFloat(e.estimated_time || 0), 0);
+    const quizMins = mod.quiz?.questions?.length ? mod.quiz.questions.length * 3 : 15; // standard 3m per MCQ, or default 15m
+    
+    const computedTotalHours = lessonsSum + (exercisesSum + quizMins) / 60;
+    const totalHours = mod.estimated_hours ? parseFloat(mod.estimated_hours) : parseFloat(computedTotalHours.toFixed(1));
+    
+    return {
+      total: totalHours,
+      lessons: lessonsSum.toFixed(1).replace(/\.0$/, ''),
+      exercises: exercisesSum,
+      quiz: quizMins
+    };
   };
 
   const SectionTitle = ({ children }) => (
@@ -54,6 +73,7 @@ export default function ModuleAccordion({ modules }) {
         const objectives = asArray(mod.learning_objectives || mod.objectives);
         const tools = asArray(mod.tools || mod.recommended_tools || mod.technologies);
         const resources = asArray(mod.resources || mod.suggested_resources);
+        const times = getModuleTimes(mod);
 
         return (
           <div 
@@ -63,8 +83,9 @@ export default function ModuleAccordion({ modules }) {
             <div 
               className="accordion-header"
               onClick={() => toggleModule(moduleKey)}
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <span className="badge badge-modernize" style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
                   {mod.module_id || `MOD_${String(index + 1).padStart(2, '0')}`}
                 </span>
@@ -72,9 +93,20 @@ export default function ModuleAccordion({ modules }) {
                   {mod.module_title || `Module ${index + 1}`}
                 </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                  {formatDuration(mod)}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '12px', color: 'var(--accent-primary)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  ⏱️ {times.total}h total
+                </span>
+                <span style={{ 
+                  fontSize: '11px', 
+                  color: 'var(--text-secondary)', 
+                  background: 'rgba(255, 255, 255, 0.03)', 
+                  padding: '4px 10px', 
+                  borderRadius: 'var(--radius-sm)', 
+                  border: '1px solid var(--border-glass)',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {times.lessons}h lessons • {times.exercises}m practice • {times.quiz}m quiz
                 </span>
                 <span style={{ 
                   transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', 

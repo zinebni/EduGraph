@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import SyllabusUploader from '@/components/SyllabusUploader';
 import AgentProgress from '@/components/AgentProgress';
-import CurriculumReport from '@/components/CurriculumReport';
 import ModuleAccordion from '@/components/ModuleAccordion';
 import { connectAndGenerate } from '@/lib/api';
 
@@ -142,19 +141,7 @@ export default function GeneratePage() {
             </button>
           </div>
 
-          {finalResult.curriculum_report && (
-            <div className="glass-card" style={{ padding: '28px' }}>
-              <div style={{ marginBottom: '24px' }}>
-                <h3 style={{ marginBottom: '8px', fontSize: '22px', color: 'var(--text-primary)' }}>
-                  📖 Curriculum Report
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-                  Full curriculum analysis, market research, module breakdowns, and recommendations.
-                </p>
-              </div>
-              <CurriculumReport markdown={finalResult.curriculum_report} />
-            </div>
-          )}
+
 
           <div className="glass-card" style={{ padding: '28px' }}>
             <div style={{ marginBottom: '24px' }}>
