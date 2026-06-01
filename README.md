@@ -160,6 +160,23 @@ npm install
 npm run dev
 ```
 
+### 3.5 Docker & Docker Compose Setup
+
+Alternatively, you can build and start the entire stack simultaneously in isolated containers using Docker and Docker Compose:
+
+```bash
+# Start both backend and frontend services in the background
+docker compose up --build -d
+
+# Check status of containers
+docker compose ps
+
+# View real-time log outputs
+docker compose logs -f
+```
+
+The database SQLite file (`backend/edugraph.db`) is mapped locally to your host directory via volume mounting, meaning all your settings, API keys, and curriculum history are safely persisted on your host machine outside the containers.
+
 ### 4. Configuration
 1. Open your browser and navigate to `http://localhost:3000`.
 2. The setup guard automatically intercepts and redirects you to `/settings`.
