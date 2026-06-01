@@ -2,42 +2,24 @@ import json
 import uuid
 import asyncio
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.database import get_db, async_session
+from app.database import async_session
 from app.models import Settings, Generation
 from app.agents.graph import build_graph
 
 router = APIRouter(prefix="/ws", tags=["generate"])
 
-def extract_messages_from_val(val):
-    """Recursively collect message lists in any dictionary or list structure."""
-    messages = []
-    if isinstance(val, list):
-        if val and hasattr(val[0], "content"):
-            messages.extend(val)
-        else:
-            for item in val:
-                messages.extend(extract_messages_from_val(item))
-    elif isinstance(val, dict):
-        if "messages" in val:
-            messages.extend(val["messages"])
-        for key, v in val.items():
-            if key == "messages":
-                continue
-            messages.extend(extract_messages_from_val(v))
-    return messages
 
 def is_handoff_message(content: str) -> bool:
-    """Return True for LangGraph supervisor transfer/status messages."""
-    handoff_markers = [
+    markers = [
         "Successfully transferred to",
         "Transferring back to",
         "transfer_to_",
     ]
-    return any(marker in content for marker in handoff_markers)
+    return any(marker in content for marker in markers)
+
 
 def strip_json_fence(content: str) -> str:
     cleaned = content.strip()
@@ -49,20 +31,19 @@ def strip_json_fence(content: str) -> str:
         cleaned = cleaned[:-3]
     return cleaned.strip()
 
+
 def extract_json_object(content: str) -> str:
     cleaned = strip_json_fence(content)
     if cleaned.startswith("{") and cleaned.endswith("}"):
         return cleaned
-
     start = cleaned.find("{")
     end = cleaned.rfind("}")
     if start != -1 and end != -1 and end > start:
         return cleaned[start:end + 1].strip()
-
     return cleaned
 
+
 def message_content_to_text(content) -> str:
-    """Normalize LangChain string or structured content blocks to plain text."""
     if isinstance(content, str):
         return content.strip()
     if isinstance(content, list):
@@ -81,6 +62,7 @@ def message_content_to_text(content) -> str:
             return text.strip()
     return ""
 
+
 def split_duration(total_hours: int, count: int) -> list[int]:
     if count <= 0:
         return []
@@ -88,11 +70,13 @@ def split_duration(total_hours: int, count: int) -> list[int]:
     remainder = total_hours % count
     return [base + (1 if index < remainder else 0) for index in range(count)]
 
+
 def infer_topic_from_title(title: str) -> str:
     for prefix in ["Generated:", "Modernized:"]:
         if title.startswith(prefix):
             return title[len(prefix):].strip()
     return title.strip() or "the course topic"
+
 
 def extract_module_titles_from_report(report: str) -> list[str]:
     patterns = [
@@ -109,6 +93,7 @@ def extract_module_titles_from_report(report: str) -> list[str]:
         if titles:
             break
     return titles
+
 
 def build_fallback_modules(report: str, title: str, total_hours: int, level: str) -> dict:
     topic = infer_topic_from_title(title)
@@ -146,6 +131,7 @@ def build_fallback_modules(report: str, title: str, total_hours: int, level: str
                 "estimated_hours": lesson_hours[2],
             },
         ]
+        diff_label = "Easy" if level == "Beginner" else "Medium" if level == "Intermediate" else "Hard"
         modules.append({
             "module_id": module_id,
             "module_title": module_title,
@@ -163,30 +149,82 @@ def build_fallback_modules(report: str, title: str, total_hours: int, level: str
                 "title": f"Quiz: {module_title}",
                 "questions": [
                     {
-                        "question": f"What is the main goal of the {module_title} module?",
+                        "question": f"What is the primary learning objective of the {module_title} module?",
                         "options": [
-                            f"A) Build practical understanding of {module_title}",
-                            "B) Skip foundational concepts",
-                            "C) Avoid hands-on practice",
-                            "D) Replace all course assessments",
+                            "A) Build practical understanding of core concepts and apply them",
+                            "B) Memorize definitions without practical context",
+                            "C) Skip directly to advanced applications",
+                            "D) Complete a full production-grade project independently",
                         ],
                         "correct_answer": "A",
-                        "explanation": f"The module is designed to connect {module_title} concepts with practical application.",
-                    }
+                        "explanation": f"The module is designed to connect {module_title} concepts with practical application through structured activities.",
+                    },
+                    {
+                        "question": f"Which of the following best describes the role of {module_title} within {topic}?",
+                        "options": [
+                            "A) It is entirely optional and can be skipped",
+                            f"B) It provides foundational knowledge essential to {topic}",
+                            "C) It replaces all other modules in the curriculum",
+                            "D) It is only relevant for advanced practitioners",
+                        ],
+                        "correct_answer": "B",
+                        "explanation": f"Each module builds essential knowledge; {module_title} is a core component of the overall {topic} curriculum.",
+                    },
+                    {
+                        "question": f"What should a student be able to do after completing the {module_title} module?",
+                        "options": [
+                            "A) Nothing practical, only theoretical knowledge",
+                            "B) Only recite definitions from memory",
+                            f"C) Demonstrate applied understanding of {module_title} concepts",
+                            "D) Teach the entire course to others",
+                        ],
+                        "correct_answer": "C",
+                        "explanation": "The module is structured to ensure students can apply what they learned, not just recall facts.",
+                    },
+                    {
+                        "question": f"What is a common mistake students make when studying {module_title}?",
+                        "options": [
+                            "A) Practicing too much",
+                            "B) Focusing only on theory without hands-on exercises",
+                            "C) Reading the documentation thoroughly",
+                            "D) Asking too many questions during lab sessions",
+                        ],
+                        "correct_answer": "B",
+                        "explanation": "Balancing theory with practice is key; skipping hands-on work is a common pitfall.",
+                    },
+                    {
+                        "question": f"How does the guided practice section in {module_title} help students?",
+                        "options": [
+                            "A) It provides worked examples that bridge theory and application",
+                            "B) It replaces the need for any lecture content",
+                            "C) It tests students without any preparation",
+                            "D) It is identical to the applied lab section",
+                        ],
+                        "correct_answer": "A",
+                        "explanation": "Guided practice uses worked examples to help students transition from understanding concepts to applying them independently.",
+                    },
                 ],
             },
             "exercises": [
                 {
                     "title": f"{module_title} Practice Task",
                     "description": f"Complete a focused activity that demonstrates the main ideas from {module_title}. Document the decisions you made, the issues you encountered, and how you validated the result.",
-                    "difficulty": "Easy" if level == "Beginner" else "Medium" if level == "Intermediate" else "Hard",
+                    "difficulty": diff_label,
                     "expected_deliverable": "A short working artifact or written solution with a brief reflection.",
                     "estimated_time": max(int(module_hours * 20), 30),
-                }
+                },
+                {
+                    "title": f"{module_title} Extension Challenge",
+                    "description": f"Extend the practice task by adding an additional feature or analysis related to {module_title}. Explain your design choices and trade-offs.",
+                    "difficulty": "Medium" if level == "Beginner" else "Hard",
+                    "expected_deliverable": "An enhanced solution with a written explanation of design decisions.",
+                    "estimated_time": max(int(module_hours * 30), 45),
+                },
             ],
         })
 
     return {"modules": modules}
+
 
 def build_fallback_curriculum_report(title: str, topic: str, total_hours: int, level: str, search_results: str) -> str:
     module_titles = [
@@ -221,23 +259,37 @@ def build_fallback_curriculum_report(title: str, topic: str, total_hours: int, l
         f"Students complete the course with a structured understanding of {topic} and practical experience through module exercises."
     )
 
+
+AGENT_NAMES = [
+    "syllabus_reader_agent",
+    "search_agent",
+    "curriculum_writer_agent",
+    "quiz_exercise_agent",
+]
+
+
+def _match_agent(name: str):
+    for agent in AGENT_NAMES:
+        if agent in name:
+            return agent
+    return None
+
+
 @router.websocket("/generate")
 async def generate_curriculum(websocket: WebSocket):
     await websocket.accept()
-    
+
     gen_id = None
     try:
-        # 1. Receive input data
         data_str = await websocket.receive_text()
         input_params = json.loads(data_str)
-        
-        mode = input_params.get("mode") # "modernize" or "generate"
-        
-        # 2. Get API keys from db
+
+        mode = input_params.get("mode")
+
         async with async_session() as db:
             result = await db.execute(select(Settings))
             settings = result.scalar_one_or_none()
-            
+
             if not settings or not settings.google_api_key or not settings.tavily_api_key:
                 await websocket.send_json({
                     "type": "error",
@@ -245,15 +297,13 @@ async def generate_curriculum(websocket: WebSocket):
                 })
                 await websocket.close()
                 return
-                
+
             google_key = settings.google_api_key
             tavily_key = settings.tavily_api_key
             model_name = settings.default_model or "gemini-3.1-flash-lite"
-            
-        # 3. Create Generation record in SQLite
+
         gen_id = str(uuid.uuid4())
-        
-        # Determine title
+
         if mode == "modernize":
             syllabus_data = input_params.get("syllabus", {})
             title = f"Modernized: {syllabus_data.get('program_name', 'Untitled')}"
@@ -292,7 +342,7 @@ Workflow requirements:
 4. If this topic was generated before, do not reuse a previous outline blindly; regenerate according to the current level and duration.
 5. Finish by generating structured JSON modules that each contain content, lessons, quiz, and exercises.
 """
-            
+
         async with async_session() as db:
             generation = Generation(
                 id=gen_id,
@@ -303,146 +353,130 @@ Workflow requirements:
             )
             db.add(generation)
             await db.commit()
-            
-        # Build the graph dynamically
+
         graph = build_graph(google_key, tavily_key, model_name)
-        
-        # 4. Stream and execute graph
-        # Initialize state with the initial prompt message
         inputs = {"messages": [("user", prompt_content)]}
-        
-        # Keep track of results
+
         syllabus_summary = ""
         search_results = ""
         curriculum_report = ""
         quizzes_data = ""
-        
-        # We stream state updates and collect all messages as safety fallback
+
         all_messages = []
-        started_agents = set()
-        agent_names = ["syllabus_reader_agent", "search_agent", "curriculum_writer_agent", "quiz_exercise_agent"]
+        sent_starts: set[str] = set()
+        sent_results: set[str] = set()
+
         async for chunk in graph.astream(inputs, stream_mode="updates"):
             for key, val in chunk.items():
-                if key in agent_names and key not in started_agents:
-                    started_agents.add(key)
+                matched_agent = _match_agent(key)
+
+                if matched_agent and matched_agent not in sent_starts:
+                    sent_starts.add(matched_agent)
                     await websocket.send_json({
                         "type": "agent_start",
-                        "agent": key,
-                        "message": f"{key} has started..."
+                        "agent": matched_agent,
+                        "message": f"{matched_agent} has started..."
                     })
 
-                # Extract messages from this step update (collect all, including parent supervisor!)
-                chunk_msgs = extract_messages_from_val(val)
-                if chunk_msgs:
-                    all_messages.extend(chunk_msgs)
-                    
-                    # Track agent transitions and results from supervisor tool calls & responses
-                    for msg in chunk_msgs:
-                        content = message_content_to_text(getattr(msg, "content", ""))
-                        
-                        # 1. Start Signal (Supervisor tool calls to delegate tasks)
-                        if hasattr(msg, "tool_calls") and msg.tool_calls:
-                            for tc in msg.tool_calls:
-                                tool_name = tc.get("name", "")
-                                for target_agent in agent_names:
-                                    if target_agent in tool_name:
-                                        if target_agent not in started_agents:
-                                            started_agents.add(target_agent)
-                                            await websocket.send_json({
-                                                "type": "agent_start",
-                                                "agent": target_agent,
-                                                "message": f"{target_agent} has started..."
-                                            })
-                                        
-                        # 2. Result Signal (Tool response messages returning content)
-                        elif msg.__class__.__name__ == "ToolMessage" or getattr(msg, "type", "") == "tool":
-                            # Match tool call name
-                            tool_name = getattr(msg, "name", "") or getattr(msg, "tool_name", "") or ""
-                            for target_agent in agent_names:
-                                if target_agent in tool_name and content:
-                                    # Skip transition messages
-                                    if is_handoff_message(content):
-                                        continue
-                                        
-                                    if target_agent == "syllabus_reader_agent":
-                                        syllabus_summary = content
-                                        await websocket.send_json({
-                                            "type": "agent_result",
-                                            "agent": target_agent,
-                                            "data": syllabus_summary
-                                        })
-                                    elif target_agent == "search_agent":
-                                        search_results = content
-                                        await websocket.send_json({
-                                            "type": "agent_result",
-                                            "agent": target_agent,
-                                            "data": search_results
-                                        })
-                                    elif target_agent == "curriculum_writer_agent":
-                                        curriculum_report = content
-                                        await websocket.send_json({
-                                            "type": "agent_result",
-                                            "agent": target_agent,
-                                            "data": curriculum_report
-                                        })
-                                    elif target_agent == "quiz_exercise_agent":
-                                        quizzes_data = extract_json_object(content)
-                                        
-                                        try:
-                                            parsed_quizzes = json.loads(quizzes_data)
-                                            await websocket.send_json({
-                                                "type": "agent_result",
-                                                "agent": target_agent,
-                                                "data": parsed_quizzes
-                                            })
-                                        except Exception:
-                                            await websocket.send_json({
-                                                "type": "agent_result",
-                                                "agent": target_agent,
-                                                "data": quizzes_data
-                                            })
-                        else:
-                            sender = getattr(msg, "name", "") or ""
-                            if is_handoff_message(content):
-                                continue
-                            if "syllabus_reader_agent" in sender:
-                                syllabus_summary = content
+                messages = []
+                if isinstance(val, dict) and "messages" in val:
+                    messages = val["messages"]
+                elif isinstance(val, list) and val and hasattr(val[0], "content"):
+                    messages = val
+
+                if not messages:
+                    continue
+
+                all_messages.extend(messages)
+
+                for msg in messages:
+                    content = message_content_to_text(getattr(msg, "content", ""))
+                    if not content or is_handoff_message(content):
+                        continue
+
+                    if hasattr(msg, "tool_calls") and msg.tool_calls:
+                        for tc in msg.tool_calls:
+                            tool_name = tc.get("name", "")
+                            tc_agent = _match_agent(tool_name)
+                            if tc_agent and tc_agent not in sent_starts:
+                                sent_starts.add(tc_agent)
+                                await websocket.send_json({
+                                    "type": "agent_start",
+                                    "agent": tc_agent,
+                                    "message": f"{tc_agent} has started..."
+                                })
+                        continue
+
+                    sender = getattr(msg, "name", "") or ""
+                    msg_type = getattr(msg, "type", "")
+                    msg_class = msg.__class__.__name__
+
+                    source_agent = _match_agent(sender)
+
+                    if not source_agent and (msg_class == "ToolMessage" or msg_type == "tool"):
+                        tool_name = getattr(msg, "name", "") or getattr(msg, "tool_name", "") or ""
+                        source_agent = _match_agent(tool_name)
+
+                    if not source_agent:
+                        continue
+
+                    if source_agent not in sent_starts:
+                        sent_starts.add(source_agent)
+                        await websocket.send_json({
+                            "type": "agent_start",
+                            "agent": source_agent,
+                            "message": f"{source_agent} has started..."
+                        })
+
+                    if source_agent in sent_results:
+                        continue
+
+                    if source_agent == "syllabus_reader_agent":
+                        if len(content) > len(syllabus_summary):
+                            syllabus_summary = content
+                            sent_results.add(source_agent)
+                            await websocket.send_json({
+                                "type": "agent_result",
+                                "agent": source_agent,
+                                "data": syllabus_summary
+                            })
+                    elif source_agent == "search_agent":
+                        if len(content) > len(search_results):
+                            search_results = content
+                            sent_results.add(source_agent)
+                            await websocket.send_json({
+                                "type": "agent_result",
+                                "agent": source_agent,
+                                "data": search_results
+                            })
+                    elif source_agent == "curriculum_writer_agent":
+                        if len(content) > len(curriculum_report):
+                            curriculum_report = content
+                            sent_results.add(source_agent)
+                            await websocket.send_json({
+                                "type": "agent_result",
+                                "agent": source_agent,
+                                "data": curriculum_report
+                            })
+                    elif source_agent == "quiz_exercise_agent":
+                        extracted = extract_json_object(content)
+                        if len(extracted) > len(quizzes_data):
+                            quizzes_data = extracted
+                            sent_results.add(source_agent)
+                            try:
+                                parsed = json.loads(quizzes_data)
                                 await websocket.send_json({
                                     "type": "agent_result",
-                                    "agent": "syllabus_reader_agent",
-                                    "data": syllabus_summary
+                                    "agent": source_agent,
+                                    "data": parsed
                                 })
-                            elif "search_agent" in sender:
-                                search_results = content
+                            except Exception:
                                 await websocket.send_json({
                                     "type": "agent_result",
-                                    "agent": "search_agent",
-                                    "data": search_results
+                                    "agent": source_agent,
+                                    "data": quizzes_data
                                 })
-                            elif "curriculum_writer_agent" in sender:
-                                curriculum_report = content
-                                await websocket.send_json({
-                                    "type": "agent_result",
-                                    "agent": "curriculum_writer_agent",
-                                    "data": curriculum_report
-                                })
-                            elif "quiz_exercise_agent" in sender:
-                                quizzes_data = extract_json_object(content)
-                                try:
-                                    parsed_quizzes = json.loads(quizzes_data)
-                                    await websocket.send_json({
-                                        "type": "agent_result",
-                                        "agent": "quiz_exercise_agent",
-                                        "data": parsed_quizzes
-                                    })
-                                except Exception:
-                                    await websocket.send_json({
-                                        "type": "agent_result",
-                                        "agent": "quiz_exercise_agent",
-                                        "data": quizzes_data
-                                    })
-                        
-                # Update partial results in SQLite
+
                 async with async_session() as db:
                     result = await db.execute(select(Generation).where(Generation.id == gen_id))
                     gen_record = result.scalar_one_or_none()
@@ -456,20 +490,14 @@ Workflow requirements:
                         if quizzes_data:
                             gen_record.quizzes_data = quizzes_data
                         await db.commit()
-                        
-        # 5. Pipeline completed - final parsing fallback to guarantee all outputs are captured
+
         for msg in all_messages:
             content = message_content_to_text(getattr(msg, "content", ""))
-            if not content:
+            if not content or is_handoff_message(content):
                 continue
-                
-            # Skip framework transitions and handoff messages
-            if is_handoff_message(content):
-                continue
-                
+
             sender = getattr(msg, "name", "") or ""
-            
-            # Identify by sender name (prefer longer content to avoid intermediate prompts/replies)
+
             if "syllabus_reader" in sender:
                 if len(content) > len(syllabus_summary) and "Successfully transferred" not in content:
                     syllabus_summary = content
@@ -483,27 +511,22 @@ Workflow requirements:
                 if len(content) > len(quizzes_data) and "Successfully transferred" not in content:
                     quizzes_data = extract_json_object(content)
             else:
-                # Heuristic patterns fallback
                 content_lower = content.lower()
-                
-                # Pattern 1: Quiz/Exercise JSON Data
+
                 if ("\"modules\"" in content or "'modules'" in content) and ("\"quiz\"" in content or "'quiz'" in content or "\"exercises\"" in content or "'exercises'" in content):
                     if content.strip().startswith("{") or "```json" in content:
                         raw_quizzes = extract_json_object(content)
                         if len(raw_quizzes) > len(quizzes_data):
                             quizzes_data = raw_quizzes
-                            
-                # Pattern 2: Full Curriculum Report (Markdown)
+
                 elif ("introduction" in content_lower or "report outline" in content_lower) and ("modules" in content_lower or "lesson breakdown" in content_lower or "timelines" in content_lower):
                     if len(content) > len(curriculum_report) and len(content) > 300:
                         curriculum_report = content
-                        
-                # Pattern 3: Outdated Syllabus Summary
+
                 elif "program:" in content_lower and "institution:" in content_lower:
                     if len(content) > len(syllabus_summary) and len(content) < 5000:
                         syllabus_summary = content
-                        
-                # Pattern 4: Web Search Research Results
+
                 elif ("search results" in content_lower or "tavily" in content_lower or "market research" in content_lower or "skills gap" in content_lower) and len(content) > 100:
                     if len(content) > len(search_results) and len(content) < 15000:
                         search_results = content
@@ -515,8 +538,8 @@ Workflow requirements:
             pass
 
         if not curriculum_report:
-            if "curriculum_writer_agent" not in started_agents:
-                started_agents.add("curriculum_writer_agent")
+            if "curriculum_writer_agent" not in sent_starts:
+                sent_starts.add("curriculum_writer_agent")
                 await websocket.send_json({
                     "type": "agent_start",
                     "agent": "curriculum_writer_agent",
@@ -529,6 +552,7 @@ Workflow requirements:
                 level,
                 search_results,
             )
+            sent_results.add("curriculum_writer_agent")
             await websocket.send_json({
                 "type": "agent_result",
                 "agent": "curriculum_writer_agent",
@@ -536,8 +560,8 @@ Workflow requirements:
             })
 
         if not final_quizzes.get("modules"):
-            if "quiz_exercise_agent" not in started_agents:
-                started_agents.add("quiz_exercise_agent")
+            if "quiz_exercise_agent" not in sent_starts:
+                sent_starts.add("quiz_exercise_agent")
                 await websocket.send_json({
                     "type": "agent_start",
                     "agent": "quiz_exercise_agent",
@@ -545,19 +569,20 @@ Workflow requirements:
                 })
             final_quizzes = build_fallback_modules(curriculum_report, title, int(hours) if str(hours).isdigit() else 60, level)
             quizzes_data = json.dumps(final_quizzes)
+            sent_results.add("quiz_exercise_agent")
             await websocket.send_json({
                 "type": "agent_result",
                 "agent": "quiz_exercise_agent",
                 "data": final_quizzes
             })
-            
+
         final_payload = {
             "curriculum_report": curriculum_report,
             "quizzes_data": final_quizzes,
             "search_results": search_results,
             "syllabus_summary": syllabus_summary
         }
-        
+
         async with async_session() as db:
             result = await db.execute(select(Generation).where(Generation.id == gen_id))
             gen_record = result.scalar_one_or_none()
@@ -567,17 +592,27 @@ Workflow requirements:
                 gen_record.curriculum_report = curriculum_report
                 gen_record.quizzes_data = quizzes_data
                 gen_record.status = "complete"
-                gen_record.completed_at = datetime.utcnow()
+                gen_record.completed_at = datetime.now(timezone.utc)
                 await db.commit()
-                
+
         await websocket.send_json({
             "type": "complete",
             "generation_id": gen_id,
             "data": final_payload
         })
-        
+
     except WebSocketDisconnect:
-        pass
+        if gen_id:
+            try:
+                async with async_session() as db:
+                    result = await db.execute(select(Generation).where(Generation.id == gen_id))
+                    gen_record = result.scalar_one_or_none()
+                    if gen_record and gen_record.status == "processing":
+                        gen_record.status = "error"
+                        gen_record.error_message = "Generation cancelled by user (WebSocket disconnected)."
+                        await db.commit()
+            except Exception:
+                pass
     except Exception as e:
         import traceback
         tb = traceback.format_exc()
@@ -592,7 +627,7 @@ Workflow requirements:
                         await db.commit()
             except Exception:
                 pass
-            
+
         try:
             await websocket.send_json({
                 "type": "error",

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import CurriculumReport from '@/components/CurriculumReport';
 import ModuleAccordion from '@/components/ModuleAccordion';
 import { getGeneration } from '@/lib/api';
 
@@ -110,10 +111,24 @@ export default function GenerationDetailPage() {
           </button>
         </div>
 
+        {generation.curriculum_report && (
+          <div className="glass-card" style={{ padding: '28px' }}>
+            <div style={{ marginBottom: '24px' }}>
+              <h3 style={{ marginBottom: '8px', fontSize: '22px', color: 'var(--text-primary)' }}>
+                📖 Curriculum Report
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                Full curriculum analysis, market research, module breakdowns, and recommendations.
+              </p>
+            </div>
+            <CurriculumReport markdown={generation.curriculum_report} />
+          </div>
+        )}
+
         <div className="glass-card" style={{ padding: '28px' }}>
           <div style={{ marginBottom: '24px' }}>
             <h3 style={{ marginBottom: '8px', fontSize: '22px', color: 'var(--text-primary)' }}>
-              Modules, Lessons, Quizzes & Exercises
+              📝 Modules, Lessons, Quizzes & Exercises
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
               Each module is divided into learning content, lesson topics, a knowledge check, and hands-on practice.

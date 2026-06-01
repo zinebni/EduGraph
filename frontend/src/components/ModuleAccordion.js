@@ -139,8 +139,8 @@ export default function ModuleAccordion({ modules }) {
                               {asArray(lesson.topics).map((topic, topicIndex) => (
                                 <span
                                   key={topicIndex}
-                                  className="badge"
-                                  style={{ fontSize: '10px', color: 'var(--text-secondary)' }}
+                                  className="badge badge-generate"
+                                  style={{ fontSize: '10px' }}
                                 >
                                   {topic}
                                 </span>

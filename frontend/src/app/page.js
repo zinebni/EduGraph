@@ -3,22 +3,22 @@
 import { useState, useEffect, useRef } from 'react';
 import SyllabusUploader from '@/components/SyllabusUploader';
 import AgentProgress from '@/components/AgentProgress';
+import CurriculumReport from '@/components/CurriculumReport';
 import ModuleAccordion from '@/components/ModuleAccordion';
 import { connectAndGenerate } from '@/lib/api';
 
 export default function GeneratePage() {
-  const [status, setStatus] = useState('idle'); // idle, processing, complete, error
+  const [status, setStatus] = useState('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  const [generationMode, setGenerationMode] = useState(null); // modernize, generate
+  const [generationMode, setGenerationMode] = useState(null);
   const [activeAgent, setActiveAgent] = useState(null);
   const [completedAgents, setCompletedAgents] = useState([]);
   const [agentResults, setAgentResults] = useState({});
   const [finalResult, setFinalResult] = useState(null);
   const [generationId, setGenerationId] = useState(null);
   const wsRef = useRef(null);
-  const activeAgentRef = useRef(null);
+  const completedRef = useRef(new Set());
 
-  // Auto scroll to agent progress or final report
   const progressRef = useRef(null);
   const reportRef = useRef(null);
 
@@ -31,32 +31,24 @@ export default function GeneratePage() {
   }, [status]);
 
   const handleStartGeneration = (requestData) => {
-    // Reset state
     setStatus('processing');
     setGenerationMode(requestData.mode);
     setErrorMessage('');
     setActiveAgent(null);
-    activeAgentRef.current = null;
     setCompletedAgents([]);
     setAgentResults({});
     setFinalResult(null);
     setGenerationId(null);
+    completedRef.current = new Set();
 
-    // Establish socket connection and start generating
     const ws = connectAndGenerate(requestData, {
       onAgentStart: (agent, message) => {
-        const previousAgent = activeAgentRef.current;
-        activeAgentRef.current = agent;
         setActiveAgent(agent);
-        setCompletedAgents((prev) => {
-          if (!previousAgent || previousAgent === agent || prev.includes(previousAgent)) {
-            return prev;
-          }
-          return [...prev, previousAgent];
-        });
       },
       onAgentResult: (agent, data) => {
-        setCompletedAgents((prev) => prev.includes(agent) ? prev : [...prev, agent]);
+        completedRef.current.add(agent);
+        setCompletedAgents([...completedRef.current]);
+        setActiveAgent(null);
         setAgentResults((prev) => ({ ...prev, [agent]: data }));
       },
       onComplete: (data, id) => {
@@ -64,17 +56,13 @@ export default function GeneratePage() {
         setGenerationId(id);
         setStatus('complete');
         setActiveAgent(null);
-        activeAgentRef.current = null;
       },
       onError: (message) => {
         setErrorMessage(message);
         setStatus('error');
         setActiveAgent(null);
-        activeAgentRef.current = null;
       },
-      onClose: () => {
-        // Safe to ignore if already complete or error
-      }
+      onClose: () => {}
     });
 
     wsRef.current = ws;
@@ -85,11 +73,11 @@ export default function GeneratePage() {
     setGenerationMode(null);
     setErrorMessage('');
     setActiveAgent(null);
-    activeAgentRef.current = null;
     setCompletedAgents([]);
     setAgentResults({});
     setFinalResult(null);
     setGenerationId(null);
+    completedRef.current = new Set();
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
@@ -154,10 +142,24 @@ export default function GeneratePage() {
             </button>
           </div>
 
+          {finalResult.curriculum_report && (
+            <div className="glass-card" style={{ padding: '28px' }}>
+              <div style={{ marginBottom: '24px' }}>
+                <h3 style={{ marginBottom: '8px', fontSize: '22px', color: 'var(--text-primary)' }}>
+                  📖 Curriculum Report
+                </h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                  Full curriculum analysis, market research, module breakdowns, and recommendations.
+                </p>
+              </div>
+              <CurriculumReport markdown={finalResult.curriculum_report} />
+            </div>
+          )}
+
           <div className="glass-card" style={{ padding: '28px' }}>
             <div style={{ marginBottom: '24px' }}>
               <h3 style={{ marginBottom: '8px', fontSize: '22px', color: 'var(--text-primary)' }}>
-                📖 Modules, Lessons, Quizzes & Exercises
+                📝 Modules, Lessons, Quizzes & Exercises
               </h3>
               <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
                 Each module is divided into learning content, lesson topics, a knowledge check, and hands-on practice.
