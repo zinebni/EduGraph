@@ -272,7 +272,7 @@ h1, h2, h3, h4, h5, h6 {
      can scroll to it — justify-content:center caused content above
      the center-point to be inaccessible behind the HUD */
   justify-content: flex-start;
-  padding: 104px 60px 48px; /* 104px clears HUD (18px top + ~64px height + 22px gap) */
+  padding: 82px 48px 24px; /* Reduced top padding to clear HUD but maximize vertical height */
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1),
@@ -280,8 +280,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(60px) scale(0.98);
   overflow-y: auto;
   overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(99,102,241,.2) transparent;
+  scrollbar-width: none; /* Hide scrollbars for presentation cleanliness */
 }
 .slide.active {
   opacity: 1;
@@ -295,7 +294,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Hero & Conclusion have minimal content — restore vertical centering */
 #slide-1,
-#slide-12 {
+#slide-7 {
   justify-content: center;
   padding-top: 80px; /* still need some clearance for HUD */
 }
@@ -324,7 +323,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid rgba(79,70,229,.15);
   border-radius: 9999px;
   padding: 5px 14px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 /* ============================================================
@@ -349,12 +348,12 @@ h1, h2, h3, h4, h5, h6 {
   font-size: clamp(26px, 3vw, 38px);
   font-weight: 800;
   letter-spacing: -0.03em;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .section-sub {
   font-size: 15px;
   color: var(--text-secondary);
-  margin-bottom: 36px;
+  margin-bottom: 18px;
   max-width: 600px;
 }
 
@@ -365,7 +364,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-card);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding: 18px 22px;
   box-shadow: var(--shadow-card);
   transition: border-color var(--transition-normal),
               box-shadow var(--transition-normal),
@@ -480,9 +479,9 @@ h1, h2, h3, h4, h5, h6 {
    ============================================================ */
 .agents-grid {
   display: grid;
-  /* Explicit 2-column layout so grid-column:span 2 reliably fills full width */
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  /* Explicit 4-column layout so all cards fit in a single row */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 .agent-card {
   background: #fff;
@@ -596,7 +595,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .arch-arrow {
   width: 2px;
-  height: 28px;
+  height: 12px;
   background: linear-gradient(to bottom, rgba(99,102,241,.3), rgba(124,58,237,.3));
   position: relative;
   margin: 0 auto;
@@ -642,7 +641,7 @@ h1, h2, h3, h4, h5, h6 {
 .timeline::before {
   content: '';
   position: absolute;
-  left: 22px; top: 0; bottom: 0;
+  left: 16px; top: 0; bottom: 0;
   width: 2px;
   background: linear-gradient(to bottom,
     rgba(79,70,229,.3),
@@ -653,7 +652,7 @@ h1, h2, h3, h4, h5, h6 {
 .timeline-step {
   display: flex;
   gap: 20px;
-  padding: 0 0 24px 0;
+  padding: 0 0 10px 0;
   position: relative;
   opacity: 0;
   transform: translateX(-16px);
@@ -664,12 +663,12 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(0);
 }
 .timeline-dot {
-  width: 44px; height: 44px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   background: #fff;
   border: 2px solid rgba(99,102,241,.25);
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
+  font-size: 14px;
   flex-shrink: 0;
   position: relative;
   z-index: 1;

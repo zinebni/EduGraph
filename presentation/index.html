@@ -22,7 +22,7 @@
       <span class="hud-logo-text gradient-text">EduGraph</span>
     </div>
 
-    <span id="slide-counter">01 / 12</span>
+    <span id="slide-counter">01 / 07</span>
 
     <div class="hud-nav">
       <button class="hud-btn" id="prev-btn" aria-label="Previous slide" title="Previous (←)">&#8592;</button>
@@ -103,122 +103,59 @@
     </section>
 
     <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 2 — Problem Statement    ║
+         ║  SLIDE 2 — Goal & Overview      ║
          ╚══════════════════════════════════╝ -->
     <section class="slide" id="slide-2" data-slide="2">
       <div class="slide-content">
-        <div class="slide-label animate-fade-in delay-1">⚠️ The Challenge</div>
-        <h2 class="section-title animate-slide-up delay-1">Why Educational Content Creation is Broken</h2>
+        <div class="slide-label animate-fade-in delay-1">🎯 Goal & Overview</div>
+        <h2 class="section-title animate-slide-up delay-1">Automating & Scaling Curriculum Design</h2>
         <p class="section-sub animate-slide-up delay-2">
-          Educators and instructional designers face significant barriers when creating high-quality, up-to-date curricula at scale.
-        </p>
-
-        <div class="problem-grid">
-          <div class="problem-card animate-slide-up delay-2">
-            <div class="problem-icon-wrap">⏱️</div>
-            <div>
-              <div class="problem-title">Enormous Time Investment</div>
-              <div class="problem-desc">Designing a single comprehensive course curriculum from scratch can take weeks of research, planning, and writing — time most educators simply don't have.</div>
-            </div>
-          </div>
-          <div class="problem-card animate-slide-up delay-3">
-            <div class="problem-icon-wrap">📉</div>
-            <div>
-              <div class="problem-title">Rapidly Outdated Content</div>
-              <div class="problem-desc">Technology moves faster than curriculum cycles. Skills in demand today may be obsolete in 18 months, yet course content rarely keeps pace with industry shifts.</div>
-            </div>
-          </div>
-          <div class="problem-card animate-slide-up delay-4">
-            <div class="problem-icon-wrap">🎯</div>
-            <div>
-              <div class="problem-title">Lack of Personalization</div>
-              <div class="problem-desc">Generic, one-size-fits-all curricula fail to adapt to the learner's skill level, target audience, or specific domain requirements, reducing learning effectiveness.</div>
-            </div>
-          </div>
-          <div class="problem-card animate-slide-up delay-5">
-            <div class="problem-icon-wrap">🔄</div>
-            <div>
-              <div class="problem-title">No Automation in Production</div>
-              <div class="problem-desc">From outlines to quizzes to exercises, every piece of educational material is produced manually, with no intelligent pipeline connecting research to deliverables.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Visual stat bar -->
-        <div class="glass-card animate-slide-up delay-6" style="margin-top:24px; padding:22px 28px; display:flex; gap:32px; align-items:center; flex-wrap:wrap;">
-          <div style="flex:1; min-width:160px; text-align:center;">
-            <div style="font-family:var(--font-heading); font-size:36px; font-weight:800; letter-spacing:-0.03em;" class="gradient-text">80%</div>
-            <div style="font-size:13px; color:var(--text-secondary);">of curriculum time is spent on research & formatting, not actual design</div>
-          </div>
-          <div style="width:1px; height:50px; background:var(--border-glass); flex-shrink:0;"></div>
-          <div style="flex:1; min-width:160px; text-align:center;">
-            <div style="font-family:var(--font-heading); font-size:36px; font-weight:800; letter-spacing:-0.03em;" class="gradient-text">3–6 wks</div>
-            <div style="font-size:13px; color:var(--text-secondary);">average time to produce a single course curriculum from scratch</div>
-          </div>
-          <div style="width:1px; height:50px; background:var(--border-glass); flex-shrink:0;"></div>
-          <div style="flex:1; min-width:160px; text-align:center;">
-            <div style="font-family:var(--font-heading); font-size:36px; font-weight:800; letter-spacing:-0.03em;" class="gradient-text">60%</div>
-            <div style="font-size:13px; color:var(--text-secondary);">of online courses contain outdated technical content within 2 years</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 3 — Platform Overview    ║
-         ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-3" data-slide="3">
-      <div class="slide-content">
-        <div class="slide-label animate-fade-in delay-1">🌐 Platform Overview</div>
-        <h2 class="section-title animate-slide-up delay-1">What is EduGraph?</h2>
-        <p class="section-sub animate-slide-up delay-2">
-          EduGraph is a production-ready AI platform that transforms a simple topic prompt into a fully-structured course — complete with curriculum, lessons, quizzes, and exercises.
+          Traditional content design is slow, manual, and quickly outdated. EduGraph coordinates autonomous AI agents to build full courses in minutes.
         </p>
 
         <div class="overview-layout">
-          <!-- Left: WHO -->
+          <!-- Left: THE GOAL OF THE AGENT -->
           <div class="animate-slide-up delay-3">
-            <div class="glass-card" style="margin-bottom:16px; padding:22px 24px;">
-              <div style="font-family:var(--font-heading); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:14px;">👥 Main Users</div>
+            <div class="glass-card" style="margin-bottom:16px; padding:24px; border-left:4px solid var(--accent-primary);">
+              <div style="font-family:var(--font-heading); font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent-primary); margin-bottom:16px;">🤖 The Agent's Goal</div>
+              <p style="font-size:14px; color:var(--text-secondary); line-height:1.65; margin-bottom:16px;">
+                To function as an autonomous curriculum design team that handles research, structuring, drafting, and assessment generation with zero human intervention.
+              </p>
               <div class="overview-pill-list">
-                <div class="overview-pill">
-                  <div class="overview-pill-icon" style="background:rgba(79,70,229,.08);">👨‍🏫</div>
-                  <div class="overview-pill-text"><strong>Educators & Instructors</strong><span>Design complete curricula in minutes</span></div>
+                <div class="overview-pill" style="padding: 12px 16px;">
+                  <div class="overview-pill-icon" style="background:rgba(99,102,241,.08); font-size:18px;">⚡</div>
+                  <div class="overview-pill-text"><strong style="font-size:13px;">Drastic Time Reduction</strong><span style="font-size:12px;">Cuts development time from weeks to under 3 minutes.</span></div>
                 </div>
-                <div class="overview-pill">
-                  <div class="overview-pill-icon" style="background:rgba(16,185,129,.08);">🏢</div>
-                  <div class="overview-pill-text"><strong>Training Departments</strong><span>Scale professional development content</span></div>
+                <div class="overview-pill" style="padding: 12px 16px;">
+                  <div class="overview-pill-icon" style="background:rgba(16,185,129,.08); font-size:18px;">📈</div>
+                  <div class="overview-pill-text"><strong style="font-size:13px;">Job-Aligned Content</strong><span style="font-size:12px;">Tears down the gap between static courses and job market trends.</span></div>
                 </div>
-                <div class="overview-pill">
-                  <div class="overview-pill-icon" style="background:rgba(245,158,11,.08);">🎓</div>
-                  <div class="overview-pill-text"><strong>EdTech Startups</strong><span>Rapidly prototype course catalogs</span></div>
-                </div>
-                <div class="overview-pill">
-                  <div class="overview-pill-icon" style="background:rgba(219,39,119,.08);">🔬</div>
-                  <div class="overview-pill-text"><strong>Researchers</strong><span>Explore multi-agent curriculum design</span></div>
+                <div class="overview-pill" style="padding: 12px 16px;">
+                  <div class="overview-pill-icon" style="background:rgba(219,39,119,.08); font-size:18px;">🎯</div>
+                  <div class="overview-pill-text"><strong style="font-size:13px;">Hyper-Personalization</strong><span style="font-size:12px;">Tailors course outcomes to skill levels and custom guidelines.</span></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Right: CAPABILITIES -->
+          <!-- Right: PLATFORM OVERVIEW (CAPABILITIES) -->
           <div class="animate-slide-up delay-4">
             <div style="display:flex; flex-direction:column; gap:14px;">
-              <div class="glass-card" style="padding:20px 24px; border-left:3px solid var(--accent-primary);">
-                <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:15px;">🔍 Web-Augmented Research</div>
-                <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.6;">Searches real-world job market data and emerging industry trends via Tavily Search API before any curriculum is written.</p>
+              <div class="glass-card" style="padding:18px 22px; border-left:3px solid var(--accent-primary);">
+                <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:14.5px;">🔍 1. Web-Augmented Research</div>
+                <p style="font-size:13px; color:var(--text-secondary); line-height:1.55;">Searches real-world job demand and industry standards using Tavily Search API before drafting begins.</p>
               </div>
-              <div class="glass-card" style="padding:20px 24px; border-left:3px solid var(--accent-secondary);">
-                <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:15px;">✍️ Intelligent Curriculum Design</div>
-                <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.6;">Generates structured modules, lessons, learning objectives, timelines and resource recommendations tailored to your audience and level.</p>
+              <div class="glass-card" style="padding:18px 22px; border-left:3px solid var(--accent-secondary);">
+                <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:14.5px;">✍️ 2. Structured Curriculum Writer</div>
+                <p style="font-size:13px; color:var(--text-secondary); line-height:1.55;">Generates modules, detailed lessons, learning objectives, timelines, and resources in Markdown.</p>
               </div>
-              <div class="glass-card" style="padding:20px 24px; border-left:3px solid var(--accent-tertiary);">
-                <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:15px;">📝 Assessment Generation</div>
-                <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.6;">Automatically produces MCQ quizzes with explanations and progressive hands-on coding challenges for every module.</p>
+              <div class="glass-card" style="padding:18px 22px; border-left:3px solid var(--accent-tertiary);">
+                <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:14.5px;">📝 3. Assessment Specialist</div>
+                <p style="font-size:13px; color:var(--text-secondary); line-height:1.55;">Produces structured MCQ quizzes with explanations and hands-on coding challenges for every module.</p>
               </div>
-              <div class="glass-card" style="padding:20px 24px; border-left:3px solid var(--accent-success);">
-                <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:15px;">⚡ Real-time Streaming UI</div>
-                <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.6;">Live WebSocket updates stream each agent's progress directly to the browser — you watch the curriculum being built in real time.</p>
+              <div class="glass-card" style="padding:18px 22px; border-left:3px solid var(--accent-success);">
+                <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:14.5px;">⚡ 4. Live Streaming & Execution</div>
+                <p style="font-size:13px; color:var(--text-secondary); line-height:1.55;">Streams live step-by-step progress from all agents directly to the browser via WebSockets.</p>
               </div>
             </div>
           </div>
@@ -227,63 +164,9 @@
     </section>
 
     <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 4 — Core Features        ║
+         ║  SLIDE 3 — System Architecture  ║
          ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-4" data-slide="4">
-      <div class="slide-content">
-        <div class="slide-label animate-fade-in delay-1">✨ Core Features</div>
-        <h2 class="section-title animate-slide-up delay-1">Everything You Need, Automated</h2>
-        <p class="section-sub animate-slide-up delay-2">From a single topic prompt to a complete educational package — EduGraph handles the entire pipeline end-to-end.</p>
-
-        <div class="features-grid">
-          <div class="feature-card animate-slide-up delay-2">
-            <span class="feature-icon">🧠</span>
-            <div class="feature-title">Multi-Agent Orchestration</div>
-            <div class="feature-desc">Three specialized AI agents coordinate under a team supervisor, each with a defined role, using LangGraph's graph-based workflow engine.</div>
-          </div>
-          <div class="feature-card animate-slide-up delay-3">
-            <span class="feature-icon">🔍</span>
-            <div class="feature-title">Live Web Research</div>
-            <div class="feature-desc">The Search Agent queries Tavily Search API for real-time job market data, emerging tools, and industry-standard best practices before curriculum design begins.</div>
-          </div>
-          <div class="feature-card animate-slide-up delay-3">
-            <span class="feature-icon">📐</span>
-            <div class="feature-title">Structured Curriculum Design</div>
-            <div class="feature-desc">Outputs complete Markdown curriculum documents: course outline, module breakdown, lesson timings, learning objectives, and recommended resources.</div>
-          </div>
-          <div class="feature-card animate-slide-up delay-4">
-            <span class="feature-icon">📝</span>
-            <div class="feature-title">MCQ Quizzes & Exercises</div>
-            <div class="feature-desc">The Assessment Specialist agent generates interactive multiple-choice quizzes with answer explanations and progressive hands-on coding challenges per module.</div>
-          </div>
-          <div class="feature-card animate-slide-up delay-4">
-            <span class="feature-icon">⚡</span>
-            <div class="feature-title">Real-time WebSocket Streaming</div>
-            <div class="feature-desc">Every agent status update is pushed via WebSocket to the Next.js frontend — users see a live step-by-step progress stepper as the pipeline executes.</div>
-          </div>
-          <div class="feature-card animate-slide-up delay-5">
-            <span class="feature-icon">🎚️</span>
-            <div class="feature-title">Audience Parameterization</div>
-            <div class="feature-desc">Configure skill level (Beginner → Expert), target audience, total course duration, and custom focus instructions to tailor every output precisely.</div>
-          </div>
-          <div class="feature-card animate-slide-up delay-5">
-            <span class="feature-icon">🗄️</span>
-            <div class="feature-title">Persistent History Log</div>
-            <div class="feature-desc">All generations are stored in an SQLite database and accessible via the History Log page — review, compare, and re-examine any past curriculum.</div>
-          </div>
-          <div class="feature-card animate-slide-up delay-6">
-            <span class="feature-icon">🐳</span>
-            <div class="feature-title">Docker-Ready Deployment</div>
-            <div class="feature-desc">Full Docker Compose configuration for one-command deployment of both backend and frontend services with persistent volume-mapped database storage.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 5 — System Architecture  ║
-         ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-5" data-slide="5">
+    <section class="slide" id="slide-3" data-slide="3">
       <div class="slide-content">
         <div class="slide-label animate-fade-in delay-1">🏗️ Architecture</div>
         <h2 class="section-title animate-slide-up delay-1">System Architecture</h2>
@@ -355,34 +238,34 @@
           </div>
 
           <!-- Right: Layer descriptions -->
-          <div class="animate-slide-up delay-4" style="display:flex; flex-direction:column; gap:14px;">
-            <div class="glass-card" style="padding:18px 22px;">
-              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                <span style="font-size:20px;">⚛️</span>
-                <div style="font-family:var(--font-heading); font-weight:700; font-size:15px;">Presentation Layer</div>
+          <div class="animate-slide-up delay-4" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="glass-card" style="padding:12px 14px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span style="font-size:16px;">⚛️</span>
+                <div style="font-family:var(--font-heading); font-weight:700; font-size:13px;">Presentation Layer</div>
               </div>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Next.js 15 with React 19. Floating pill navbar, live agent stepper, accordion module viewer, quiz cards. Connects via REST API for settings/history and WebSocket for live generation streaming.</p>
+              <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.45;">Next.js 15 & React 19. Floating HUD, live agent stepper, accordion module viewer. Connects via REST and WebSockets.</p>
             </div>
-            <div class="glass-card" style="padding:18px 22px;">
-              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                <span style="font-size:20px;">🐍</span>
-                <div style="font-family:var(--font-heading); font-weight:700; font-size:15px;">API Layer</div>
+            <div class="glass-card" style="padding:12px 14px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span style="font-size:16px;">🐍</span>
+                <div style="font-family:var(--font-heading); font-weight:700; font-size:13px;">API Layer</div>
               </div>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">FastAPI with async SQLAlchemy (aiosqlite). Exposes REST routes for <code style="font-family:var(--font-mono); background:rgba(15,23,42,.06); padding:1px 5px; border-radius:4px;">/api/settings</code> and <code style="font-family:var(--font-mono); background:rgba(15,23,42,.06); padding:1px 5px; border-radius:4px;">/api/history</code>, plus a WebSocket endpoint for streaming agent events.</p>
+              <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.45;">FastAPI backend. REST API routes for settings & history, and WebSocket endpoints for streaming agent execution events.</p>
             </div>
-            <div class="glass-card" style="padding:18px 22px;">
-              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                <span style="font-size:20px;">🧠</span>
-                <div style="font-family:var(--font-heading); font-weight:700; font-size:15px;">AI Orchestration Layer</div>
+            <div class="glass-card" style="padding:12px 14px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span style="font-size:16px;">🧠</span>
+                <div style="font-family:var(--font-heading); font-weight:700; font-size:13px;">AI Orchestration</div>
               </div>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">LangGraph + langgraph-supervisor builds a compiled multi-agent graph at runtime using user-provided API keys. Agents share state via <code style="font-family:var(--font-mono); background:rgba(15,23,42,.06); padding:1px 5px; border-radius:4px;">MessagesState</code> — a chronological message log that all agents can read.</p>
+              <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.45;">LangGraph + supervisor. Builds dynamic multi-agent pipeline at runtime. Shared MessagesState guides execution.</p>
             </div>
-            <div class="glass-card" style="padding:18px 22px;">
-              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                <span style="font-size:20px;">🗄️</span>
-                <div style="font-family:var(--font-heading); font-weight:700; font-size:15px;">Persistence Layer</div>
+            <div class="glass-card" style="padding:12px 14px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span style="font-size:16px;">🗄️</span>
+                <div style="font-family:var(--font-heading); font-weight:700; font-size:13px;">Persistence Layer</div>
               </div>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">SQLite via SQLAlchemy async. Two tables: <code style="font-family:var(--font-mono); background:rgba(15,23,42,.06); padding:1px 5px; border-radius:4px;">settings</code> (API keys, model config) and <code style="font-family:var(--font-mono); background:rgba(15,23,42,.06); padding:1px 5px; border-radius:4px;">generations</code> (full history with curriculum, quizzes, and status).</p>
+              <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.45;">SQLAlchemy async + SQLite. Dual table schema: user settings/keys, and generation histories with complete results.</p>
             </div>
           </div>
 
@@ -391,9 +274,9 @@
     </section>
 
     <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 6 — LangGraph Workflow   ║
+         ║  SLIDE 4 — LangGraph Workflow   ║
          ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-6" data-slide="6">
+    <section class="slide" id="slide-4" data-slide="4">
       <div class="slide-content">
         <div class="slide-label animate-fade-in delay-1">⚙️ Workflow</div>
         <h2 class="section-title animate-slide-up delay-1">LangGraph Multi-Agent Workflow</h2>
@@ -504,9 +387,9 @@
     </section>
 
     <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 7 — AI Agents           ║
+         ║  SLIDE 5 — AI Agents           ║
          ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-7" data-slide="7">
+    <section class="slide" id="slide-5" data-slide="5">
       <div class="slide-content">
         <div class="slide-label animate-fade-in delay-1">🤖 Agents</div>
         <h2 class="section-title animate-slide-up delay-1">AI Agent Collaboration</h2>
@@ -514,20 +397,19 @@
 
         <div class="agents-grid">
           <!-- Supervisor -->
-          <div class="agent-card animate-slide-up delay-2" style="border-color:rgba(245,158,11,.2); grid-column: span 2;">
+          <div class="agent-card animate-slide-up delay-2" style="border-color:rgba(245,158,11,.2);">
             <div class="agent-header">
               <div class="agent-badge" style="background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.2);">🎛️</div>
               <div>
                 <div class="agent-name">team_supervisor</div>
-                <div class="agent-role">Orchestrator · LangGraph Supervisor</div>
+                <div class="agent-role">Orchestrator</div>
               </div>
-              <span class="badge badge-indigo" style="margin-left:auto; background:rgba(245,158,11,.08); color:#b45309; border-color:rgba(245,158,11,.2);">Core</span>
             </div>
-            <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px;">
-              Built using <code style="font-family:var(--font-mono); background:rgba(15,23,42,.05); padding:1px 5px; border-radius:4px;">create_supervisor()</code> from langgraph-supervisor. Uses structured tool-calling to decide which agent to invoke next based on the current MessagesState. Enforces the strict 3-step pipeline sequence and compiles all agent outputs before returning.
+            <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.45; margin-bottom:8px;">
+              Built using <code style="font-family:var(--font-mono); font-size:10.5px;">create_supervisor()</code>. Directs agent routing dynamically and compiles all outputs.
             </p>
             <div class="agent-io">
-              <div class="io-row"><span class="io-label">Decides</span><span class="io-text">Agent routing sequence and pipeline completion. Transfers context between agents via auto-generated handoff tools.</span></div>
+              <div class="io-row"><span class="io-label">Decides</span><span class="io-text">Agent sequence & handoffs.</span></div>
             </div>
           </div>
 
@@ -537,16 +419,15 @@
               <div class="agent-badge" style="background:rgba(79,70,229,.1); border:1px solid rgba(79,70,229,.15);">🔍</div>
               <div>
                 <div class="agent-name">search_agent</div>
-                <div class="agent-role">Trend Analyst · Market Researcher</div>
+                <div class="agent-role">Researcher</div>
               </div>
             </div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px;">
-              Market research specialist for the EdTech sector. Performs ≥3 Tavily web searches covering job demand, modern tools/frameworks, and educational best practices.
+            <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.45; margin-bottom:8px;">
+              EdTech trend analyst. Queries Tavily Search API for real-time skill demand and frameworks.
             </p>
             <div class="agent-io">
-              <div class="io-row"><span class="io-label">Tools</span><span class="io-text">TavilySearch (max_results=5, dynamically configured)</span></div>
-              <div class="io-row"><span class="io-label">Input</span><span class="io-text">Topic + audience + skill level + duration from MessagesState</span></div>
-              <div class="io-row"><span class="io-label">Output</span><span class="io-text">Structured research report: skill gaps, industry tools, cert standards</span></div>
+              <div class="io-row"><span class="io-label">Tools</span><span class="io-text">TavilySearch API</span></div>
+              <div class="io-row"><span class="io-label">Output</span><span class="io-text">Structured market report</span></div>
             </div>
           </div>
 
@@ -556,36 +437,33 @@
               <div class="agent-badge" style="background:rgba(124,58,237,.1); border:1px solid rgba(124,58,237,.15);">✍️</div>
               <div>
                 <div class="agent-name">curriculum_writer_agent</div>
-                <div class="agent-role">Lead Curriculum Architect</div>
+                <div class="agent-role">Lead Architect</div>
               </div>
             </div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px;">
-              Expert educational content designer. Pure LLM reasoning — no external tools. Reads the research report and crafts a complete Markdown curriculum with 5–8 modules and full lesson breakdowns.
+            <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.45; margin-bottom:8px;">
+              Curriculum structure designer. Uses chain-of-thought to compile comprehensive Markdown outlines.
             </p>
             <div class="agent-io">
-              <div class="io-row"><span class="io-label">Tools</span><span class="io-text">None — pure LLM chain-of-thought reasoning</span></div>
-              <div class="io-row"><span class="io-label">Input</span><span class="io-text">Full research report from search_agent via MessagesState</span></div>
-              <div class="io-row"><span class="io-label">Output</span><span class="io-text">Markdown doc: modules, lessons, objectives, timelines, resources</span></div>
+              <div class="io-row"><span class="io-label">Tools</span><span class="io-text">None (Pure LLM)</span></div>
+              <div class="io-row"><span class="io-label">Output</span><span class="io-text">Modules, lessons, timing</span></div>
             </div>
           </div>
 
           <!-- Quiz Agent -->
-          <div class="agent-card animate-slide-up delay-5" style="grid-column: span 2;">
+          <div class="agent-card animate-slide-up delay-5">
             <div class="agent-header">
               <div class="agent-badge" style="background:rgba(219,39,119,.1); border:1px solid rgba(219,39,119,.15);">📝</div>
               <div>
                 <div class="agent-name">quiz_exercise_agent</div>
-                <div class="agent-role">Assessment Specialist · JSON Parser</div>
+                <div class="agent-role">JSON Specialist</div>
               </div>
             </div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px;">
-              Designs interactive learning materials from the finalized Markdown curriculum. Outputs a strictly structured JSON payload matching the frontend's module quiz/exercise schema — MCQ questions with distractors and explanations, plus progressive coding challenges.
+            <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.45; margin-bottom:8px;">
+              JSON parser. Compiles MCQ quizzes and coding exercises mapped exactly to the frontend.
             </p>
-            <div class="agent-io" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-              <div class="io-row"><span class="io-label">Tools</span><span class="io-text">None — pure LLM JSON parsing</span></div>
-              <div class="io-row"><span class="io-label">Input</span><span class="io-text">Finalized curriculum Markdown from MessagesState</span></div>
-              <div class="io-row"><span class="io-label">Output</span><span class="io-text">Structured JSON: modules → quizzes (MCQ) + exercises (coding)</span></div>
-              <div class="io-row"><span class="io-label">Constraint</span><span class="io-text">Must match exact schema expected by the frontend ModuleAccordion component</span></div>
+            <div class="agent-io">
+              <div class="io-row"><span class="io-label">Tools</span><span class="io-text">Structured Output (JSON)</span></div>
+              <div class="io-row"><span class="io-label">Output</span><span class="io-text">MCQs & Coding exercises</span></div>
             </div>
           </div>
         </div>
@@ -593,79 +471,9 @@
     </section>
 
     <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 8 — Dev Techniques       ║
+         ║  SLIDE 6 — Technologies         ║
          ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-8" data-slide="8">
-      <div class="slide-content">
-        <div class="slide-label animate-fade-in delay-1">🛠️ Engineering</div>
-        <h2 class="section-title animate-slide-up delay-1">Development Techniques</h2>
-        <p class="section-sub animate-slide-up delay-2">EduGraph applies cutting-edge AI engineering principles to build a robust, scalable, and maintainable multi-agent system.</p>
-
-        <div class="techniques-grid">
-          <div class="technique-card animate-slide-up delay-2">
-            <span class="technique-num">01</span>
-            <div>
-              <div class="technique-name">Multi-Agent Systems</div>
-              <div class="technique-desc">Decomposing a complex task (curriculum generation) into specialized, focused agents — each expert in one domain — dramatically improves output quality over a single monolithic LLM call.</div>
-            </div>
-          </div>
-          <div class="technique-card animate-slide-up delay-2">
-            <span class="technique-num">02</span>
-            <div>
-              <div class="technique-name">Agent Orchestration</div>
-              <div class="technique-desc">LangGraph's <code style="font-family:var(--font-mono); font-size:12px; background:rgba(15,23,42,.06); padding:1px 5px; border-radius:4px;">create_supervisor()</code> creates a graph-based supervisor that uses structured tool-calling to route between agents, enforcing the exact execution sequence.</div>
-            </div>
-          </div>
-          <div class="technique-card animate-slide-up delay-3">
-            <span class="technique-num">03</span>
-            <div>
-              <div class="technique-name">Shared State Management</div>
-              <div class="technique-desc">All agents operate on a single <code style="font-family:var(--font-mono); font-size:12px; background:rgba(15,23,42,.06); padding:1px 5px; border-radius:4px;">MessagesState</code> — a chronological list of AIMessages. Each agent reads all prior context before producing its output, enabling implicit inter-agent communication.</div>
-            </div>
-          </div>
-          <div class="technique-card animate-slide-up delay-3">
-            <span class="technique-num">04</span>
-            <div>
-              <div class="technique-name">Graph-based Workflows</div>
-              <div class="technique-desc">LangGraph models the agent pipeline as a compiled directed graph. Nodes are agents; edges are supervisor routing decisions. This enables conditional branching, loops, and deterministic execution.</div>
-            </div>
-          </div>
-          <div class="technique-card animate-slide-up delay-4">
-            <span class="technique-num">05</span>
-            <div>
-              <div class="technique-name">Prompt Engineering</div>
-              <div class="technique-desc">Each agent has a carefully engineered system prompt defining its exact role, constraints, output format, and what it must NOT do — preventing scope creep and hallucinated outputs across agent boundaries.</div>
-            </div>
-          </div>
-          <div class="technique-card animate-slide-up delay-4">
-            <span class="technique-num">06</span>
-            <div>
-              <div class="technique-name">AI Pipeline Design</div>
-              <div class="technique-desc">The three-stage pipeline (Research → Write → Assess) follows a producer-consumer pattern: each stage consumes the previous stage's output, progressively enriching the educational content.</div>
-            </div>
-          </div>
-          <div class="technique-card animate-slide-up delay-5">
-            <span class="technique-num">07</span>
-            <div>
-              <div class="technique-name">Modular Architecture</div>
-              <div class="technique-desc">Clean separation: agents/, routes/, tools/, components/ directories. The graph is built dynamically (<code style="font-family:var(--font-mono); font-size:12px;">build_graph()</code>) at runtime with injected API keys — fully swappable LLM backends.</div>
-            </div>
-          </div>
-          <div class="technique-card animate-slide-up delay-5">
-            <span class="technique-num">08</span>
-            <div>
-              <div class="technique-name">Event-driven Streaming</div>
-              <div class="technique-desc">WebSocket-based event streaming pushes agent lifecycle events (start, result, complete, error) to the frontend in real time — giving users live visibility into the AI pipeline execution.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 9 — Technologies         ║
-         ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-9" data-slide="9">
+    <section class="slide" id="slide-6" data-slide="6">
       <div class="slide-content">
         <div class="slide-label animate-fade-in delay-1">⚙️ Tech Stack</div>
         <h2 class="section-title animate-slide-up delay-1">Technologies Used</h2>
@@ -731,125 +539,9 @@
     </section>
 
     <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 10 — Benefits & Impact   ║
+         ║  SLIDE 7 — Conclusion           ║
          ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-10" data-slide="10">
-      <div class="slide-content">
-        <div class="slide-label animate-fade-in delay-1">📈 Impact</div>
-        <h2 class="section-title animate-slide-up delay-1">Benefits & Impact</h2>
-        <p class="section-sub animate-slide-up delay-2">EduGraph fundamentally transforms the economics and quality of educational content creation.</p>
-
-        <div class="metrics-grid animate-slide-up delay-3">
-          <div class="metric-card">
-            <div class="metric-value gradient-text" data-target="95">0</div>
-            <div class="metric-label" style="font-size:12px;">% reduction in<br>curriculum research time</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value" style="background:var(--gradient-success); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;" data-target="3">0</div>
-            <div class="metric-label" style="font-size:12px;">min average time<br>to full curriculum</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value" style="background:linear-gradient(135deg,#7c3aed,#db2777); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;" data-target="100">0</div>
-            <div class="metric-label" style="font-size:12px;">% real-world data<br>in every curriculum</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value gradient-text" data-target="8">0</div>
-            <div class="metric-label" style="font-size:12px;">specialized learning<br>modules per course</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value" style="background:var(--gradient-success); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;" data-target="40">0</div>
-            <div class="metric-label" style="font-size:12px;">+ MCQ questions<br>per curriculum</div>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-top:4px;">
-          <div class="glass-card animate-slide-up delay-4" style="padding:22px; border-left:3px solid var(--accent-primary);">
-            <div style="font-size:22px; margin-bottom:10px;">⚡</div>
-            <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:15px;">Faster Creation</div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">What took weeks of manual work is now completed in minutes — from topic input to full course package with assessments.</p>
-          </div>
-          <div class="glass-card animate-slide-up delay-4" style="padding:22px; border-left:3px solid var(--accent-secondary);">
-            <div style="font-size:22px; margin-bottom:10px;">🎯</div>
-            <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:15px;">Content Consistency</div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">The supervised pipeline guarantees every curriculum follows the same high-quality structure — no gaps, no missed modules, no forgotten assessments.</p>
-          </div>
-          <div class="glass-card animate-slide-up delay-5" style="padding:22px; border-left:3px solid var(--accent-tertiary);">
-            <div style="font-size:22px; margin-bottom:10px;">📡</div>
-            <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:15px;">Always Current</div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Web-augmented research via Tavily ensures every curriculum reflects the latest industry trends, tools, and skill requirements — not stale templates.</p>
-          </div>
-          <div class="glass-card animate-slide-up delay-5" style="padding:22px; border-left:3px solid var(--accent-success);">
-            <div style="font-size:22px; margin-bottom:10px;">📐</div>
-            <div style="font-family:var(--font-heading); font-weight:700; margin-bottom:6px; font-size:15px;">Infinite Scale</div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Generate curricula for any topic, any audience, any skill level — from beginner to expert — with the same system, no additional resources required.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 11 — Future Roadmap      ║
-         ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-11" data-slide="11">
-      <div class="slide-content">
-        <div class="slide-label animate-fade-in delay-1">🚀 Roadmap</div>
-        <h2 class="section-title animate-slide-up delay-1">Future Improvements</h2>
-        <p class="section-sub animate-slide-up delay-2">EduGraph's multi-agent foundation is built to grow. The next generation of features will transform it from a curriculum generator into a complete intelligent learning platform.</p>
-
-        <div class="roadmap-grid">
-          <div class="roadmap-item animate-slide-up delay-2">
-            <span class="roadmap-icon">🎓</span>
-            <div class="roadmap-title">Adaptive Learning Paths</div>
-            <div class="roadmap-desc">Personalized curriculum pacing based on learner performance signals and assessment results.</div>
-          </div>
-          <div class="roadmap-item animate-slide-up delay-2">
-            <span class="roadmap-icon">🎯</span>
-            <div class="roadmap-title">AI Recommendations</div>
-            <div class="roadmap-desc">Smart suggestions for follow-up courses, related skills, and prerequisite content based on learning goals.</div>
-          </div>
-          <div class="roadmap-item animate-slide-up delay-3">
-            <span class="roadmap-icon">🔗</span>
-            <div class="roadmap-title">LMS Integrations</div>
-            <div class="roadmap-desc">Export curricula directly to Moodle, Canvas, Blackboard, or any SCORM-compatible learning management system.</div>
-          </div>
-          <div class="roadmap-item animate-slide-up delay-3">
-            <span class="roadmap-icon">📊</span>
-            <div class="roadmap-title">Analytics Dashboard</div>
-            <div class="roadmap-desc">Track generation history, curriculum coverage trends, popular topics, and agent performance metrics.</div>
-          </div>
-          <div class="roadmap-item animate-slide-up delay-4">
-            <span class="roadmap-icon">🌍</span>
-            <div class="roadmap-title">Multilingual Content</div>
-            <div class="roadmap-desc">Generate complete curricula in French, Arabic, Spanish, German, and other languages natively via LLM multilingual capabilities.</div>
-          </div>
-          <div class="roadmap-item animate-slide-up delay-4">
-            <span class="roadmap-icon">📝</span>
-            <div class="roadmap-title">Advanced Assessments</div>
-            <div class="roadmap-desc">Open-ended questions, project rubrics, peer-review criteria, and AI-graded essay prompts per module.</div>
-          </div>
-          <div class="roadmap-item animate-slide-up delay-5">
-            <span class="roadmap-icon">🤝</span>
-            <div class="roadmap-title">Collaborative Editing</div>
-            <div class="roadmap-desc">Multi-user curriculum review and editing workspace with version control and comment threads.</div>
-          </div>
-          <div class="roadmap-item animate-slide-up delay-5">
-            <span class="roadmap-icon">🔌</span>
-            <div class="roadmap-title">Custom Agent Plugins</div>
-            <div class="roadmap-desc">Allow users to add domain-specific expert agents (legal, medical, engineering) to the orchestration pipeline.</div>
-          </div>
-          <div class="roadmap-item animate-slide-up delay-6">
-            <span class="roadmap-icon">🎬</span>
-            <div class="roadmap-title">Video Script Generation</div>
-            <div class="roadmap-desc">A new Video Script Agent generates slide scripts and talking points for each lesson automatically.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ╔══════════════════════════════════╗
-         ║  SLIDE 12 — Conclusion          ║
-         ╚══════════════════════════════════╝ -->
-    <section class="slide" id="slide-12" data-slide="12">
+    <section class="slide" id="slide-7" data-slide="7">
       <!-- Ambient orbs again for closing symmetry -->
       <div class="hero-orbs">
         <div class="orb orb-1" style="opacity:0.3;"></div>
@@ -858,56 +550,77 @@
       <div class="hero-grid"></div>
 
       <div class="slide-content" style="position:relative; z-index:1;">
-        <div style="text-align:center; margin-bottom:40px;" class="animate-slide-up delay-1">
+        <div style="text-align:center; margin-bottom:32px;" class="animate-slide-up delay-1">
           <div class="slide-label" style="justify-content:center;">🎯 Conclusion</div>
-          <h2 class="section-title" style="font-size:clamp(30px,4vw,48px);">
+          <h2 class="section-title" style="font-size:clamp(28px,3.5vw,44px);">
             EduGraph — <span class="gradient-text">Redefining</span> Curriculum Design
           </h2>
-          <p style="font-size:16px; color:var(--text-secondary); max-width:620px; margin:0 auto; line-height:1.7;">
-            By combining LangGraph's graph-based orchestration with specialized AI agents, real-time web research, and a beautiful full-stack interface, EduGraph delivers a new standard for educational content production.
+          <p style="font-size:15px; color:var(--text-secondary); max-width:620px; margin:0 auto; line-height:1.65;">
+            By combining LangGraph's multi-agent orchestration with live web research and an interactive, real-time UI, EduGraph sets a new standard for modern educational workflows.
           </p>
         </div>
 
-        <div class="conclusion-grid animate-slide-up delay-2">
-          <div class="conclusion-card">
-            <div class="conclusion-card-title">🏆 Key Achievements</div>
-            <ul class="conclusion-list">
-              <li>Production-ready multi-agent LangGraph pipeline</li>
-              <li>Full-stack app: Next.js 15 + FastAPI + SQLite</li>
-              <li>Real-time WebSocket agent progress streaming</li>
-              <li>Web-augmented research via Tavily Search API</li>
-              <li>Structured JSON assessment generation per module</li>
-              <li>One-command Docker Compose deployment</li>
-              <li>Persistent generation history with full data retention</li>
+        <div class="conclusion-grid animate-slide-up delay-2" style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+          <!-- Main Benefit & Impact -->
+          <div class="conclusion-card" style="padding:24px;">
+            <div class="conclusion-card-title" style="font-family:var(--font-heading); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--accent-primary); margin-bottom:16px;">🏆 Key Benefits & Impact</div>
+            <ul class="conclusion-list" style="display:flex; flex-direction:column; gap:12px; list-style:none; padding:0;">
+              <li style="display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+                <span style="color:var(--accent-success); font-weight:700;">✓</span>
+                <div><strong>95% Time Reduction</strong> — Automates research and outline generation from weeks to under 3 minutes.</div>
+              </li>
+              <li style="display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+                <span style="color:var(--accent-success); font-weight:700;">✓</span>
+                <div><strong>Real-World Alignment</strong> — Integrates Tavily web queries to ensure curricula fit current industry trends.</div>
+              </li>
+              <li style="display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+                <span style="color:var(--accent-success); font-weight:700;">✓</span>
+                <div><strong>End-to-End Package</strong> — Generates complete structured curricula along with progressive coding challenges & quizzes.</div>
+              </li>
+              <li style="display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+                <span style="color:var(--accent-success); font-weight:700;">✓</span>
+                <div><strong>Deterministic Supervisor</strong> — Enforces correct execution order and reliable JSON parsing across agents.</div>
+              </li>
             </ul>
           </div>
-          <div class="conclusion-card">
-            <div class="conclusion-card-title">💡 Innovation Highlights</div>
-            <ul class="conclusion-list">
-              <li>Supervisor-enforced deterministic agent sequencing</li>
-              <li>Shared MessagesState for implicit agent communication</li>
-              <li>Dynamic graph compilation with user-injected API keys</li>
-              <li>Strict prompt boundaries preventing scope overlap</li>
-              <li>Real-world data integration before any content is written</li>
-              <li>Audience & level-aware curriculum parameterization</li>
-              <li>Beautiful glassmorphism UI matching a 2026 SaaS standard</li>
+
+          <!-- Important Perspectives -->
+          <div class="conclusion-card" style="padding:24px;">
+            <div class="conclusion-card-title" style="font-family:var(--font-heading); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--accent-secondary); margin-bottom:16px;">🚀 Important Perspectives</div>
+            <ul class="conclusion-list" style="display:flex; flex-direction:column; gap:12px; list-style:none; padding:0;">
+              <li style="display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+                <span style="color:var(--accent-secondary); font-weight:700;">→</span>
+                <div><strong>Adaptive Learning Paths</strong> — Personalize learning flow dynamically based on real-time quiz results.</div>
+              </li>
+              <li style="display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+                <span style="color:var(--accent-secondary); font-weight:700;">→</span>
+                <div><strong>LMS Integrations</strong> — Export directly to standard platforms like Canvas, Moodle, or SCORM profiles.</div>
+              </li>
+              <li style="display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+                <span style="color:var(--accent-secondary); font-weight:700;">→</span>
+                <div><strong>Video Scripts & Audio</strong> — Auto-generate lecture video scripts and voice narratives for each lesson.</div>
+              </li>
+              <li style="display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+                <span style="color:var(--accent-secondary); font-weight:700;">→</span>
+                <div><strong>Multilingual Generation</strong> — Localize complete courses instantly in French, Arabic, Spanish, and German.</div>
+              </li>
             </ul>
           </div>
         </div>
 
         <!-- Final CTA -->
-        <div class="glass-card animate-slide-up delay-4" style="margin-top:28px; padding:28px 36px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; background:linear-gradient(135deg,rgba(79,70,229,.04),rgba(219,39,119,.03));">
+        <div class="glass-card animate-slide-up delay-4" style="margin-top:24px; padding:24px 32px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; background:linear-gradient(135deg,rgba(79,70,229,.04),rgba(219,39,119,.03));">
           <div style="display:flex; align-items:center; gap:16px;">
-            <span style="font-size:40px;">🧠</span>
+            <span style="font-size:36px;">🧠</span>
             <div>
-              <div style="font-family:var(--font-heading); font-size:20px; font-weight:800; letter-spacing:-0.02em;" class="gradient-text">EduGraph</div>
-              <div style="font-size:13px; color:var(--text-muted);">Multi-Agent AI Curriculum & Course Generator</div>
+              <div style="font-family:var(--font-heading); font-size:18px; font-weight:800; letter-spacing:-0.02em;" class="gradient-text">EduGraph</div>
+              <div style="font-size:12px; color:var(--text-muted);">Multi-Agent AI Curriculum & Course Generator</div>
             </div>
           </div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap;">
-            <div class="tech-pill" style="cursor:default;"><span>🐍</span> FastAPI :8000</div>
-            <div class="tech-pill" style="cursor:default;"><span>⚛️</span> Next.js :3000</div>
-            <div class="tech-pill" style="cursor:default;"><span>🕸️</span> LangGraph</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <div class="tech-pill" style="cursor:default; padding:6px 12px; font-size:12px;"><span>🐍</span> FastAPI :8000</div>
+            <div class="tech-pill" style="cursor:default; padding:6px 12px; font-size:12px;"><span>⚛️</span> Next.js :3000</div>
+            <div class="tech-pill" style="cursor:default; padding:6px 12px; font-size:12px;"><span>🕸️</span> LangGraph</div>
           </div>
         </div>
       </div>

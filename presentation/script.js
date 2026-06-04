@@ -22,7 +22,7 @@
 /* ════════════════════════════════════════════════════════════
    CONSTANTS & STATE
 ════════════════════════════════════════════════════════════ */
-const TOTAL_SLIDES    = 12;
+const TOTAL_SLIDES    = 7;
 const TRANSITION_MS   = 580;   // must match CSS transition duration
 const WHEEL_THROTTLE  = 700;   // ms between wheel-triggered slides
 
@@ -48,10 +48,8 @@ const $presentation = document.getElementById('presentation');
    SLIDE NAMES (for dot tooltips)
 ════════════════════════════════════════════════════════════ */
 const SLIDE_NAMES = [
-  'Hero', 'Problem Statement', 'Platform Overview', 'Core Features',
-  'System Architecture', 'LangGraph Workflow', 'AI Agents',
-  'Development Techniques', 'Tech Stack', 'Benefits & Impact',
-  'Future Roadmap', 'Conclusion'
+  'Hero', 'Goal & Overview', 'System Architecture', 'LangGraph Workflow',
+  'AI Agents', 'Tech Stack', 'Conclusion'
 ];
 
 /* ════════════════════════════════════════════════════════════
@@ -59,17 +57,12 @@ const SLIDE_NAMES = [
 ════════════════════════════════════════════════════════════ */
 const BG = [
   'radial-gradient(at 0% 0%,    rgba(99,102,241,.06) 0px, transparent 60%)',  // 1 Hero
-  'radial-gradient(at 100% 0%,  rgba(239,68,68,.04)  0px, transparent 60%)',  // 2 Problem
-  'radial-gradient(at 0% 100%,  rgba(16,185,129,.05) 0px, transparent 60%)',  // 3 Overview
-  'radial-gradient(at 100% 50%, rgba(124,58,237,.05) 0px, transparent 60%)',  // 4 Features
-  'radial-gradient(at 50% 0%,   rgba(79,70,229,.06)  0px, transparent 60%)',  // 5 Arch
-  'radial-gradient(at 0% 50%,   rgba(99,102,241,.05) 0px, transparent 60%)',  // 6 Workflow
-  'radial-gradient(at 100% 100%,rgba(219,39,119,.04) 0px, transparent 60%)',  // 7 Agents
-  'radial-gradient(at 50% 100%, rgba(124,58,237,.05) 0px, transparent 60%)',  // 8 Techniques
-  'radial-gradient(at 0% 0%,    rgba(16,185,129,.04) 0px, transparent 60%)',  // 9 Tech
-  'radial-gradient(at 100% 0%,  rgba(245,158,11,.04) 0px, transparent 60%)',  // 10 Impact
-  'radial-gradient(at 0% 100%,  rgba(79,70,229,.05)  0px, transparent 60%)',  // 11 Roadmap
-  'radial-gradient(at 50% 50%,  rgba(99,102,241,.06) 0px, transparent 60%)',  // 12 Conclusion
+  'radial-gradient(at 100% 0%,  rgba(16,185,129,.05) 0px, transparent 60%)',  // 2 Goal & Overview
+  'radial-gradient(at 50% 0%,   rgba(79,70,229,.06)  0px, transparent 60%)',  // 3 Arch
+  'radial-gradient(at 0% 50%,   rgba(99,102,241,.05) 0px, transparent 60%)',  // 4 Workflow
+  'radial-gradient(at 100% 100%,rgba(219,39,119,.04) 0px, transparent 60%)',  // 5 Agents
+  'radial-gradient(at 0% 0%,    rgba(16,185,129,.04) 0px, transparent 60%)',  // 6 Tech
+  'radial-gradient(at 50% 50%,  rgba(99,102,241,.06) 0px, transparent 60%)',  // 7 Conclusion
 ];
 
 /* ════════════════════════════════════════════════════════════
@@ -159,11 +152,9 @@ function onSlideEnter(idx) {
 
   // Per-slide
   switch (idx) {
-    case 5:  animateTimeline();           break;  // Slide 6 – Workflow
-    case 8:  setTimeout(animateTechPills, 200);   break;  // Slide 9 – Tech Stack
-    case 9:  setTimeout(animateCounters,  300);   break;  // Slide 10 – Impact
-    case 10: setTimeout(animateRoadmap,   200);   break;  // Slide 11 – Roadmap
-    case 11: animateConclusionItems();    break;  // Slide 12 – Conclusion
+    case 3:  animateTimeline();           break;  // Slide 4 – Workflow
+    case 5:  setTimeout(animateTechPills, 200);   break;  // Slide 6 – Tech Stack
+    case 6:  animateConclusionItems();    break;  // Slide 7 – Conclusion
   }
 }
 
@@ -171,7 +162,7 @@ function onSlideEnter(idx) {
    TIMELINE ANIMATION  (Slide 6)
 ════════════════════════════════════════════════════════════ */
 function animateTimeline() {
-  const steps = document.querySelectorAll('#slide-6 .timeline-step');
+  const steps = document.querySelectorAll('#slide-4 .timeline-step');
   steps.forEach(s => s.classList.remove('visible'));
   steps.forEach((s, i) => setTimeout(() => s.classList.add('visible'), i * 150 + 80));
 }
@@ -180,7 +171,7 @@ function animateTimeline() {
    COUNTER ANIMATION  (Slide 10)
 ════════════════════════════════════════════════════════════ */
 function animateCounters() {
-  document.querySelectorAll('#slide-10 .metric-value[data-target]').forEach(el => {
+  document.querySelectorAll('#slide-7 .metric-value[data-target]').forEach(el => {
     const target   = parseInt(el.dataset.target, 10);
     const label    = el.nextElementSibling?.textContent ?? '';
     const suffix   = label.includes('min') || label.includes('modules') ? ''
@@ -202,7 +193,7 @@ function animateCounters() {
    ROADMAP STAGGER  (Slide 11)
 ════════════════════════════════════════════════════════════ */
 function animateRoadmap() {
-  document.querySelectorAll('#slide-11 .roadmap-item').forEach((item, i) => {
+  document.querySelectorAll('#slide-8 .roadmap-item').forEach((item, i) => {
     Object.assign(item.style, { opacity: '0', transform: 'translateY(16px)',
       transition: 'opacity .4s ease, transform .4s ease' });
     setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'translateY(0)'; },
@@ -214,7 +205,7 @@ function animateRoadmap() {
    TECH PILLS STAGGER  (Slide 9)
 ════════════════════════════════════════════════════════════ */
 function animateTechPills() {
-  document.querySelectorAll('#slide-9 .tech-pill').forEach((pill, i) => {
+  document.querySelectorAll('#slide-6 .tech-pill').forEach((pill, i) => {
     Object.assign(pill.style, { opacity: '0', transform: 'scale(0.88)',
       transition: 'opacity .3s ease, transform .3s ease' });
     setTimeout(() => { pill.style.opacity = '1'; pill.style.transform = 'scale(1)'; },
@@ -226,7 +217,7 @@ function animateTechPills() {
    CONCLUSION ITEMS STAGGER  (Slide 12)
 ════════════════════════════════════════════════════════════ */
 function animateConclusionItems() {
-  document.querySelectorAll('#slide-12 .conclusion-list li').forEach((li, i) => {
+  document.querySelectorAll('#slide-7 .conclusion-list li').forEach((li, i) => {
     Object.assign(li.style, { opacity: '0', transform: 'translateX(-12px)',
       transition: 'opacity .4s ease, transform .4s ease' });
     setTimeout(() => { li.style.opacity = '1'; li.style.transform = 'translateX(0)'; },
@@ -262,7 +253,7 @@ function enhanceArchDiagram() {
   `;
   document.head.appendChild(style);
 
-  document.querySelectorAll('#slide-5 .arch-arrow').forEach(arrow => {
+  document.querySelectorAll('#slide-3 .arch-arrow').forEach(arrow => {
     arrow.style.position = 'relative';
     const dot = document.createElement('div');
     dot.style.cssText = `
@@ -279,7 +270,7 @@ function enhanceArchDiagram() {
    SUPERVISOR CARD PULSE RING  (Slide 7)
 ════════════════════════════════════════════════════════════ */
 function addSupervisorPulse() {
-  const card = document.querySelector('#slide-7 .agent-card');
+  const card = document.querySelector('#slide-5 .agent-card');
   if (!card) return;
   const ring = document.createElement('div');
   ring.style.cssText = `
@@ -387,25 +378,20 @@ document.addEventListener('keydown', e => {
   showHint();
 });
 
-// ── Mouse wheel
+// ── Mouse wheel (Horizontal trackpad swipes only)
 document.addEventListener('wheel', e => {
   if (wheelLocked) return;
 
-  const slide       = $slides[current];
-  const scrollable  = slide.scrollHeight > slide.clientHeight + 4;
-  const atBottom    = slide.scrollTop >= slide.scrollHeight - slide.clientHeight - 6;
-  const atTop       = slide.scrollTop <= 4;
-
-  if (e.deltaY > 0) {
-    if (scrollable && !atBottom) return;
-    next();
-  } else {
-    if (scrollable && !atTop) return;
-    prev();
+  // Only transition on horizontal trackpad swipe
+  if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 8) {
+    if (e.deltaX > 0) {
+      next();
+    } else {
+      prev();
+    }
+    wheelLocked = true;
+    setTimeout(() => { wheelLocked = false; }, WHEEL_THROTTLE);
   }
-
-  wheelLocked = true;
-  setTimeout(() => { wheelLocked = false; }, WHEEL_THROTTLE);
 }, { passive: true });
 
 // ── Touch / swipe
