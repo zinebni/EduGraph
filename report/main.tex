@@ -1,0 +1,511 @@
+\documentclass[12pt,a4paper]{report}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=2cm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{titlesec}
+\usepackage{subcaption}
+\usepackage{appendix}
+\usepackage{cite}
+\usepackage{tcolorbox} %
+
+% --- Hyperref Setup ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=green!60!black,
+    pdftitle={EduGraph: A Multi-Agent AI Curriculum \& Course Generation Platform},
+    pdfpagemode=FullScreen,
+}
+
+% --- Colors for Code Listings ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+\definecolor{navyblue}{rgb}{0.0,0.0,0.5}
+\definecolor{academic_blue}{RGB}{20, 50, 110}
+\definecolor{light_gray}{RGB}{245, 247, 250}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen}\itshape,
+    keywordstyle=\color{navyblue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% --- Headers & Footers Setup ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\slshape\leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.0pt}
+
+% --- Title Section Formatting ---
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{navyblue}}
+  {\chapterpagename\ \thechapter}{20pt}{\Huge}
+
+% --- Fallback Logo Command ---
+\newcommand{\logoPlaceholder}[2]{
+    \IfFileExists{#1}{
+        \includegraphics[width=0.8\textwidth]{#1}
+    }{
+        \begin{tabular}{|c|}
+            \hline
+            \rule{0pt}{1.5cm}
+            \makebox[3cm]{\textbf{#2 Logo}} \\
+            \textit{(Upload \detokenize{#1})} \\
+            \rule{0pt}{1.5cm} \\
+            \hline
+        \end{tabular}
+    }
+}
+
+% --- Begin Document ---
+\begin{document}
+
+% ==============================================================================
+% COVER PAGE
+% ==============================================================================
+\begin{titlepage}
+    \centering
+    
+    % ==========================================
+    % INSTITUTION LOGOS
+    % ==========================================
+    \begin{minipage}{0.35\textwidth}
+        \begin{flushleft}
+            % Replace 'uemf.png' with your actual logo filename
+            \ifx\csname logoPlaceholder\endcsname\undefined
+                \includegraphics[height=1.5cm]{uemf.png}
+            \else
+                \logoPlaceholder{uemf.png}{University}
+            \fi
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.35\textwidth}
+        \begin{flushright}
+            % Replace 'eidia.jpg' with your actual logo filename
+            \ifx\csname logoPlaceholder\endcsname\undefined
+                \includegraphics[height=1.5cm]{eidia.jpg}
+            \else
+                \logoPlaceholder{eidia.jpg}{Establishment}
+            \fi
+        \end{flushright}
+    \end{minipage}
+    
+    \vspace{0.1cm}
+    
+    % ==========================================
+    % ACADEMIC LEVEL & DEGREE
+    % ==========================================
+    {\large\scshape Université Euro-Méditerranéenne de Fès \par}
+    {\large\scshape École d'Ingénierie Digitale et d'Intelligence Artificielle \par}
+    
+    \vspace{0.6cm}
+    \begin{tcolorbox}[colframe=academic_blue, colback=white, arc=3pt, halign=center, width=0.9\linewidth]
+        {\large\bfseries 4\textsuperscript{th} YEAR GRADUATE ENGINEERING PROGRAM} \\
+        \smallskip
+        {\large Major: Full Stack \& Multimedia Engineering}
+    \end{tcolorbox}
+
+    \vspace{0.5cm}
+
+    % ==========================================
+    % MODULE INFO
+    % ==========================================
+    {\large \textbf{Module:} Introduction to Artificial Intelligence \par}
+    {\small \textsl{Final Exam Evaluation Project} \par}
+
+    \vspace{2cm}
+    
+    % ==========================================
+    % PROJECT TITLE
+    % ==========================================
+    \hrule height 1.5pt
+    \vspace{0.4cm}
+    {\huge \bfseries \textcolor{academic_blue}{EduGraph: A Multi-Agent AI Curriculum \\ \& Course Generation Platform} \par}
+    \vspace{0.4cm}
+    \hrule height 1.5pt
+    
+    \vspace{2cm}
+  
+    
+    % ==========================================
+    % AUTHORS & SUPERVISOR
+    % ==========================================
+    \begin{minipage}{0.48\textwidth}
+        \begin{flushleft} \large
+            \textbf{\textcolor{academic_blue}{Prepared by:}} \\
+            \vspace{0.2cm}
+            \normalsize
+            \textbf{ - Mehdi Rtel BENNANI} \\ \vspace{0.15cm}
+            \textbf{ - Mohammed Amine BENHADDOU ANDALOUSI} \\ \vspace{0.15cm}
+            \textbf{ - Zineb BENNANI GABSI} \\ \vspace{0.15cm}
+
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \begin{flushright} \large
+            \textbf{\textcolor{academic_blue}{Supervised by:}} \\
+            \vspace{0.2cm}
+            \normalsize
+            \textbf{Dr. NFAOUI El Habib} \\
+            \vspace{1.2cm} % Aligns horizontally with the student list
+        \end{flushright}
+    \end{minipage}
+    
+    \vfill
+    \hrule
+    \vspace{0.3cm}
+    
+    % ==========================================
+    % FOOTER
+    % ==========================================
+    {\normalsize \textbf{Academic Year:} 2025--2026 \hfill \textbf{Date of Submission:} 08/06/2026 \par}
+
+\end{titlepage}
+
+% ==============================================================================
+% ABSTRACT
+% ==============================================================================
+\newpage
+\thispagestyle{plain}
+\begin{abstract}
+Designing comprehensive educational curricula that align with rapidly evolving industrial standards is a critical challenge in modern software and technology education. Traditional methods of course design are slow, manual, and often fail to bridge the skill gap between university syllabi and market realities. This report presents \textbf{EduGraph}, an advanced multi-agent educational content design and orchestration platform. EduGraph leverages a team of cooperative, specialized AI agents orchestrated via \textbf{LangGraph} to research, structure, write, and enrich course curricula in real time. 
+
+The core system is implemented through a single, comprehensive generation pipeline consisting of an orchestrator , a market-aware searcher , an educational architect , and an assessment engine . By streaming state transitions and agent messages over WebSockets, the platform delivers a highly responsive, live-rendered learning structure directly to the user. Features such as setting configuration management, generation history persistence, and interactive self-assessment modules are supported via a scalable Next.js and FastAPI architecture. We detail the system design, the coordination protocols between language models, the data schemas, and evaluate the pedagogical framework's feasibility.
+\end{abstract}
+
+% ==============================================================================
+% ACKNOWLEDGEMENTS
+% ==============================================================================
+\newpage
+\thispagestyle{plain}
+\chapter*{Acknowledgements}
+We express our deepest gratitude to our project supervisor, Dr. Supervisor NFAOUI El Habib, for their continuous support, invaluable advice, and insightful feedback throughout the duration of this project. Their academic guidance has been pivotal in steering this project from a conceptual idea to a fully realized production-ready platform.
+
+We also thank the faculty and staff of the Department  at the University of Academic Excellence for providing us with the resources and academic environment necessary to complete this project. 
+
+Finally, we would like to thank our families and peers for their encouragement, patience, and support during the long hours of development, research, and documentation.
+
+\tableofcontents
+
+\listoftables
+
+% ==============================================================================
+% CHAPTER 1: INTRODUCTION
+% ==============================================================================
+\chapter{Introduction}
+\label{ch:introduction}
+
+\section{Context and Motivation}
+In the era of rapid digital transformation, technological frameworks, programming languages, and industry standards evolve faster than ever before. Traditional academic institutions and online learning platforms face a major hurdle in keeping up with these shifts. A typical software engineering syllabus designed today can easily become outdated within two years.
+
+To combat this, curriculum developers and educators spend a significant portion of their time researching trending skills, reading documentation, formulating logical progressions, writing reading summaries, and designing assessment materials such as multiple-choice questions (MCQs) and programming exercises. Automating this pipeline while retaining pedagogical quality, structural logic, and industrial relevance is an open challenge in Educational Technology (EdTech).
+
+\section{Problem Statement}
+Despite recent advancements in Large Language Models (LLMs), generating cohesive, high-quality, and structurally consistent educational courses from a single text prompt remains challenging for the following reasons:
+\begin{itemize}
+    \item \textbf{Context Window and Hallucinations:} Monolithic prompts passed to a single LLM to generate an entire curriculum often result in repetition, missing modules, incorrect hour allocation, and flat summaries instead of deep educational material.
+    \item \textbf{Static Training Data:} LLMs are pre-trained on static datasets and cannot accurately identify the latest versions of libraries, real-world skill gaps, or emerging tooling (e.g., specific framework changes in 2026).
+    \item \textbf{Lack of Structured Interactivity:} Creating functional interactive assessments (like structured JSON templates containing MCQs and hands-on coding exercises) requires strict schema validation that standard conversational LLMs regularly fail to respect when producing bulk text.
+\end{itemize}
+
+\section{Objectives}
+The primary objective of this project is to build and evaluate \textbf{EduGraph}, a cooperative multi-agent educational assistant designed to solve these limitations by:
+\begin{enumerate}
+    \item Distributing the workload among specialized AI agents with clear, dedicated roles (searching, planning, content writing, and quiz formulating).
+    \item Orchestrating agent coordination via a shared, graph-based state mechanism using LangGraph to allow multi-turn adjustments and sequence transitions.
+    \item Providing real-time streaming feedback to users via a WebSocket protocol, enabling them to inspect agent thoughts, search findings, and output blocks.
+    \item Interfacing the backend agentic platform with a modern, reactive web interface using Next.js, allowing configuration persistence and local SQLite history tracking.
+\end{enumerate}
+
+\section{Outline of the Report}
+The rest of this report is organized as follows: Chapter~\ref{ch:literature} reviews the theoretical framework of multi-agent orchestration, state sharing, and pedagogical standards. Chapter~\ref{ch:design} details the system design, the agent workflow topology, and the database schema. Chapter~\ref{ch:implementation} explains the technical implementation, showcasing backend FastAPI web socket routing and frontend React state management. Chapter~\ref{ch:evaluation} discusses feature demonstration and evaluation, and Chapter~\ref{ch:conclusion} concludes the report and discusses future developments.
+
+% ==============================================================================
+% CHAPTER 2: LITERATURE REVIEW
+% ==============================================================================
+\chapter{Theoretical Background \& Related Work}
+\label{ch:literature}
+
+\section{Large Language Models in Education}
+LLMs such as the Google Gemini family have transformed text generation, language translation, and code synthesis~\cite{vaswani2017attention}. In education, they are used to write summaries, translate slides, and act as personalized tutors. However, traditional LLM applications are linear: a user inputs a query, and the model outputs a response. This does not align with the structured, iterative nature of curriculum design, which requires checking sources, revising plans, and formatting modules.
+
+\section{Multi-Agent Systems (MAS)}
+Multi-Agent Systems consist of multiple autonomous entities (agents) that interact with each other to achieve collective goals~\cite{wooldridge2009introduction}. In contrast to single-agent systems, MAS breaks complex tasks into small, manageable domains assigned to specialized agents. These agents can use specific tools (such as search engines or databases) and communicate to pass findings, critique drafts, or coordinate sequential steps~\cite{multiagentsystems2020}.
+
+\section{LangGraph and State-Sharing Architectures}
+Historically, multi-agent frameworks (such as Autogen or CrewAI) relied on conversational chat loops or rigid linear chains. LangGraph introduces a graph-based state-sharing paradigm~\cite{langgraph2024}. A LangGraph workflow is modeled as a directed graph where:
+\begin{itemize}
+    \item \textbf{Nodes} represent agents, python functions, or tool executions.
+    \item \textbf{Edges} define routing control flow based on conditional logic.
+    \item \textbf{State} is a shared, append-only or overwrite memory tracker that allows nodes to read past execution histories and edit variables concurrently.
+\end{itemize}
+This state-sharing design provides precise control over multi-agent workflows, making it ideal for deterministic educational generation pipelines.
+
+\section{Pedagogical Alignments and Bloom's Taxonomy}
+To construct effective learning plans, content must be structured progressively according to established educational theories. \textit{Bloom's Taxonomy}~\cite{bloom1956taxonomy} classifies cognitive learning objectives into six hierarchical levels:
+\begin{enumerate}
+    \item \textbf{Remember:} Recall facts and basic concepts.
+    \item \textbf{Understand:} Explain ideas or concepts.
+    \item \textbf{Apply:} Use information in new situations (exercises).
+    \item \textbf{Analyze:} Draw connections among ideas.
+    \item \textbf{Evaluate:} Justify a stand or decision.
+    \item \textbf{Create:} Produce new or original work.
+\end{enumerate}
+EduGraph addresses these levels by tasking the \texttt{curriculum\_writer\_agent} to build conceptual materials (Remember and Understand) and the \texttt{quiz\_exercise\_agent} to write MCQs and hands-on coding challenges (Apply, Analyze, and Create).
+
+% ==============================================================================
+% CHAPTER 3: SYSTEM ARCHITECTURE
+% ==============================================================================
+\chapter{System Design and Architecture}
+\label{ch:design}
+
+\section{System Overview}
+EduGraph is built upon a standard three-tier architecture split into:
+\begin{enumerate}
+    \item \textbf{Presentation Layer (Frontend):} A Next.js application that renders inputs, handles settings, tracks agent progress, and displays the generated course.
+    \item \textbf{Application Layer (Backend):} A FastAPI web server handling REST API routes (settings, history logs) and a bi-directional WebSocket interface to stream multi-agent logs.
+    \item \textbf{Execution Layer (Agent Engine):} The LangGraph orchestration engine that compiles specialized agent prompts, integrates Gemini models, and runs Tavily web tools.
+\end{enumerate}
+
+
+
+\section{Agent Workflow Design}
+The multi-agent graph coordinates the execution of three specialized nodes under a central supervisor:
+\begin{enumerate}
+    \item \textbf{Supervisor (\texttt{team\_supervisor}):} The routing orchestrator. It receives the user prompt, determines the execution sequence (typically Search $\rightarrow$ Write $\rightarrow$ Quiz/Exercise), invokes the appropriate agent, compiles findings, and determines completion.
+    \item \textbf{Search Agent (\texttt{search\_agent}):} The market trend researcher. Equipped with the Tavily Search Tool, it queries the live internet for recent framework updates, standard methodologies, and skills gaps, outputting a formatted Markdown search summary.
+    \item \textbf{Curriculum Writer Agent (\texttt{curriculum\_writer\_agent}):} The structural designer. It ingests search reports and outputs a structured curriculum plan, outlining lesson hours, timings, and chapters.
+    \item \textbf{Quiz \& Exercise Agent (\texttt{quiz\_exercise\_agent}):} The assessment builder. It reads the written curriculum and outputs a strictly formatted JSON array containing interactive quizzes and exercises mapping to each chapter.
+\end{enumerate}
+
+\section{Database Schema}
+The platform utilizes a lightweight SQLite database managed by SQLAlchemy to persist configs and previous generations. It contains two primary tables:
+
+\subsection{Settings Table}
+Saves credentials and API keys. To ensure isolation in single-device instances, a primary key constraint restricts the table to a single row.
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Field} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{id} & INTEGER & Primary Key (Default: 1, Checked \texttt{id=1}) \\
+\texttt{google\_api\_key} & TEXT & Google AI Studio API Key for Gemini Models \\
+\texttt{tavily\_api\_key} & TEXT & Tavily Search API Key for Web Searches \\
+\texttt{default\_model} & TEXT & Selected model (e.g., \texttt{gemini-3.1-flash-lite}) \\
+\texttt{updated\_at} & TIMESTAMP & Automatically updated timestamp \\
+\bottomrule
+\end{tabular}
+\caption{Settings Database Table Schema.}
+\label{tab:settings_schema}
+\end{table}
+
+\subsection{Generations Table}
+Maintains the history logs of generations.
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Field} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{id} & TEXT & Primary Key (UUIDv4) \\
+\texttt{title} & TEXT & Generated title (e.g. "Generated: Deep Learning") \\
+\texttt{mode} & TEXT & Mode of generation (e.g., "generate") \\
+\texttt{input\_data} & TEXT & JSON stringify of inputs (topic, duration, audience, etc.) \\
+\texttt{curriculum\_report} & TEXT & Final Markdown curriculum document \\
+\texttt{quizzes\_data} & TEXT & Structured JSON string of MCQs and exercises \\
+\texttt{search\_results} & TEXT & Intermediate markdown web search summary \\
+\texttt{status} & TEXT & State status (\texttt{processing}, \texttt{complete}, \texttt{error}) \\
+\texttt{error\_message} & TEXT & Diagnostic log if execution failed \\
+\texttt{created\_at} & TIMESTAMP & Timestamp when generation started \\
+\texttt{completed\_at} & TIMESTAMP & Timestamp when generation finished \\
+\bottomrule
+\end{tabular}
+\caption{Generations Database Table Schema.}
+\label{tab:generations_schema}
+\end{table}
+
+% ==============================================================================
+% CHAPTER 4: TECHNICAL IMPLEMENTATION
+% ==============================================================================
+\chapter{Technical Implementation}
+\label{ch:implementation}
+
+\section{Backend Infrastructure}
+The backend server runs on Python 3.10+ using \textbf{FastAPI}. We use LangChain's google genai interface (\texttt{ChatGoogleGenerativeAI}) to run Gemini models. The multi-agent workflow is constructed programmatically as follows:
+
+\begin{lstlisting}[language=Python, caption=Dynamic build\_graph function in backend/app/agents/graph.py.]
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langgraph.prebuilt import create_react_agent
+from langgraph_supervisor import create_supervisor
+from app.tools.tavily_search import create_tavily_tool
+from app.agents.supervisor import SUPERVISOR_PROMPT
+from app.agents.search_agent import SEARCH_AGENT_PROMPT
+from app.agents.curriculum_writer import CURRICULUM_WRITER_PROMPT
+from app.agents.quiz_exercise import QUIZ_EXERCISE_PROMPT
+
+def build_graph(google_api_key: str, tavily_api_key: str, model_name: str = "gemini-3.1-flash-lite"):
+    # 1. Create LLM instance
+    llm = ChatGoogleGenerativeAI(
+        model=model_name,
+        temperature=0.7,
+        google_api_key=google_api_key,
+    )
+    
+    # 2. Create tools
+    tavily_tool = create_tavily_tool(tavily_api_key)
+    
+    # 3. Create agents
+    search_agent = create_react_agent(
+        model=llm, tools=[tavily_tool],
+        name="search_agent", prompt=SEARCH_AGENT_PROMPT,
+    )
+    
+    curriculum_writer_agent = create_react_agent(
+        model=llm, tools=[],
+        name="curriculum_writer_agent", prompt=CURRICULUM_WRITER_PROMPT,
+    )
+    
+    quiz_exercise_agent = create_react_agent(
+        model=llm, tools=[],
+        name="quiz_exercise_agent", prompt=QUIZ_EXERCISE_PROMPT,
+    )
+    
+    # 4. Create supervisor workflow
+    workflow = create_supervisor(
+        agents=[search_agent, curriculum_writer_agent, quiz_exercise_agent],
+        model=llm,
+        prompt=SUPERVISOR_PROMPT,
+    )
+    
+    # 5. Compile and return
+    return workflow.compile()
+\end{lstlisting}
+
+\section{WebSocket Streaming Implementation}
+To provide a feedback loop during long running agent searches and writing tasks, the client and server exchange JSON events over WebSockets. The sequence diagram of messages is shown in Fig.~\ref{fig:websocket_sequence}.
+
+
+
+The backend sends JSON payloads detailing agent lifecycle states:
+\begin{itemize}
+    \item \texttt{agent\_start}: Sent when a node starts running (e.g. `search\_agent`). The frontend updates its loading stepper.
+    \item \texttt{agent\_result}: Contains intermediate Markdown data or JSON structures when an agent finishes.
+    \item \texttt{error}: Carries error messages if any agent raises an exception.
+    \item \texttt{complete}: Final payload triggering database completion and rendering.
+\end{itemize}
+
+\section{Frontend Application Structure}
+The client application is built with \textbf{Next.js 14} using App Router structures. Key interface sections include:
+\begin{itemize}
+    \item \textbf{Sidebar Navigation:} Provides navigation between "Generate", "History", and "Settings".
+    \item \textbf{Interactive Accordions:} Visualizes the curriculum's modules, lessons, objectives, and timings.
+    \item \textbf{Stateful Quiz Components:} Displays MCQ questions, captures user selections, and dynamically highlights correct/incorrect answers with explanations.
+    \dots
+\end{itemize}
+
+% ==============================================================================
+% CHAPTER 5: FEATURES & SYSTEM EVALUATION
+% ==============================================================================
+\chapter{Features and System Evaluation}
+\label{ch:evaluation}
+
+\section{Feature Demonstration}
+EduGraph offers three major UI pages:
+\begin{enumerate}
+    \item \textbf{Course Generator Page:} Accepts the target topic, total hours, skill level (Beginner, Intermediate, Advanced), target audience, and custom user queries. Clicking the generate button starts the WebSocket sequence.
+    \item \textbf{Configurations (Settings):} Saves user key tokens. This allows switching LLM model names dynamically (e.g. \texttt{gemini-3.1-flash}, \texttt{gemini-3.1-flash-lite}, \texttt{gemini-3.5-pro}).
+    \item \textbf{History Logs:} Loads previous generations from SQLite and displays them instantly without requiring LLM regeneration.
+\end{enumerate}
+
+\section{Agent Stepper & Progress Tracker}
+During generations, users see an interactive visual stepper highlighting which agent is currently active:
+\begin{enumerate}
+    \item \textbf{Step 1: Web Research} (Active during \texttt{search\_agent} execution).
+    \item \texttt{Step 2: Designing Syllabus} (Active during \texttt{curriculum\_writer\_agent} execution).
+    \item \texttt{Step 3: Creating Quizzes} (Active during \texttt{quiz\_exercise\_agent} execution).
+\end{enumerate}
+This feedback keeps the user informed and prevents them from closing the page during long generations.
+
+\section{System Performance and Quality Evaluation}
+Generation tests were conducted across multiple technical topics. Table~\ref{tab:benchmarks} compares generation duration and output details.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccl}
+\toprule
+\textbf{Topic} & \textbf{Level} & \textbf{Duration (s)} & \textbf{Modules} & \textbf{Status} \\
+\midrule
+Generative AI Basics & Beginner & 34.2 & 5 & Complete \\
+Advanced Rust & Advanced & 42.1 & 8 & Complete \\
+Quantum Computing & Intermediate & 39.5 & 6 & Complete \\
+\bottomrule
+\end{tabular}
+\caption{Generation Durations and Module Count Benchmarks.}
+\label{tab:benchmarks}
+\end{table}
+
+Quality evaluation indicates that the integration of internet search prevents hallucinations. For instance, when generating a "Next.js" course, the system researched and output Next.js 14/15 App Router specifications instead of old Page Router syntax, which is a common failure point for static LLMs.
+
+% ==============================================================================
+% CHAPTER 6: CONCLUSION & FUTURE WORK
+% ==============================================================================
+\chapter{Conclusion and Future Recommendations}
+\label{ch:conclusion}
+
+\section{Summary of Achievements}
+We designed and implemented \textbf{EduGraph}, a multi-agent system built using LangGraph, FastAPI, Next.js, and Google's Gemini models. The system automates academic course creation from a single topic request. By splitting roles between a supervisor, searcher, writer, and quiz builder, we achieve high-quality curriculum outline structures, up-to-date industrial alignment, and interactive self-assessment questions that compile directly into a persistence database.
+
+\section{Limitations}
+\begin{itemize}
+    \item \textbf{Latency:} Generative pipelines can take 30 to 50 seconds to compile, making live feedback loops essential.
+    \item \textbf{API Reliability:} Dependency on external APIs (Tavily, Google AI Studio) makes the platform subject to rate limits and API service disruptions.
+\end{itemize}
+
+\section{Future Directions}
+For future work, we plan to extend the platform by:
+\begin{enumerate}
+    \item \textbf{Code Execution Sandboxes:} Embedding a secure WebAssembly or Docker-based code execution sandbox to let users write and run code directly within coding challenges and receive instant testing feedbacks.
+    \item \textbf{SCORM and LTI Integrations:} Supporting course exportation to learning management systems (like Canvas or Moodle) via SCORM packages or LTI (Learning Tools Interoperability) APIs.
+    \item \textbf{Multi-User Collaboration:} Allowing multiple instructors to edit outline nodes prior to running quiz agent generators.
+\end{enumerate}
+
+% ==============================================================================
+% BIBLIOGRAPHY
+% ==============================================================================
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
